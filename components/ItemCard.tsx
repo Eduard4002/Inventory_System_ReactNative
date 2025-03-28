@@ -4,7 +4,16 @@ import { Link } from "expo-router";
 import { icons } from "@/constants/icons";
 import { images } from "@/constants/images";
 
-const ItemCard = ({ title, id }: Movie) => {
+const ItemCard = ({
+  id,
+  name,
+  measurement_unit,
+  measurement_amount,
+  room_id,
+  price,
+  expiry_date,
+  amount,
+}: Item) => {
   return (
     <Link href={`/items/${id}`} asChild>
       <TouchableOpacity className="w-[30%]">
@@ -14,11 +23,13 @@ const ItemCard = ({ title, id }: Movie) => {
           resizeMode="cover"
         />
         <Text className="text-sm text-black mt-2" numberOfLines={1}>
-          {title}
+          {name} ({measurement_amount} {measurement_unit})
         </Text>
         <View className="flex-row items-center justify-start gap-x-1">
-          <Image source={icons.star} className="size-4" />
-          <Text className="text-xs text-black font-bold uppercase"></Text>
+          {/*<Image source={icons.star} className="size-4" />*/}
+          <Text className="text-xs text-black font-bold uppercase">
+            {amount} st
+          </Text>
         </View>
         <View className="flex-row items-center justify-between">
           <Text className="text-xs text-light-300 font-medium mt-1"></Text>

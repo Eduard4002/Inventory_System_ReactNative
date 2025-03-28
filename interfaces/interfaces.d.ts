@@ -1,6 +1,12 @@
-interface Movie {
+interface Item {
   id: number;
-  title: string;
+  name: string;
+  measurement_unit: string;
+  measurement_amount: number;
+  room_id: number;
+  price: number;
+  expiry_date: Date;
+  amount: number;
 }
 
 interface TrendingMovie {
