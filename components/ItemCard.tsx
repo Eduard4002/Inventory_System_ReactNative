@@ -3,17 +3,18 @@ import React from "react";
 import { Link } from "expo-router";
 import { icons } from "@/constants/icons";
 import { images } from "@/constants/images";
+import { Database, Tables, Enums } from "@/database.types";
 
 const ItemCard = ({
   id,
   name,
-  measurement_unit,
+  measurement_type,
   measurement_amount,
-  room_id,
+  room_type,
   price,
   expiry_date,
   amount,
-}: Item) => {
+}: Tables<"Item">) => {
   return (
     <Link href={`/items/${id}`} asChild>
       <TouchableOpacity className="w-[30%]">
@@ -23,7 +24,7 @@ const ItemCard = ({
           resizeMode="cover"
         />
         <Text className="text-sm text-black mt-2" numberOfLines={1}>
-          {name} ({measurement_amount} {measurement_unit})
+          {name} ({measurement_amount} {measurement_type})
         </Text>
         <View className="flex-row items-center justify-start gap-x-1">
           {/*<Image source={icons.star} className="size-4" />*/}

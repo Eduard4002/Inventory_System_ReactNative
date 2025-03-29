@@ -1,9 +1,9 @@
 interface Item {
   id: number;
   name: string;
-  measurement_unit: string;
   measurement_amount: number;
-  room_id: number;
+  measurement_type: string;
+  room_type: string;
   price: number;
   expiry_date: Date;
   amount: number;
