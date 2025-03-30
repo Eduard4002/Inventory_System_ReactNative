@@ -14,7 +14,7 @@ export default function Index() {
     data: items,
     loading: itemsLoading,
     error: itemsError,
-  } = useFetch(() => fetchItems({ query: "" }));
+  } = useFetch(() => fetchItems({ ID: -1 }));
   //Generate random items objects using the Item interface
 
   /* const items: Item[] = Array.from({ length: 10 }, (_, index) => ({
@@ -45,7 +45,7 @@ export default function Index() {
           <Text className="text-red-600">Error: {itemsError?.message}</Text>
         ) : null}
         <FlatList
-          data={items}
+          data={Array.isArray(items) ? items : []}
           renderItem={({ item }) => <ItemCard {...item} />}
           keyExtractor={(item) => item.id.toString()}
           numColumns={3}

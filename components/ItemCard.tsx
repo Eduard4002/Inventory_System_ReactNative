@@ -23,12 +23,12 @@ const ItemCard = ({
           className="w-full h-52 rounded-lg"
           resizeMode="cover"
         />
-        <Text className="text-sm text-black mt-2" numberOfLines={1}>
+        <Text className="text-sm text-white mt-2" numberOfLines={1}>
           {name} ({measurement_amount} {measurement_type})
         </Text>
         <View className="flex-row items-center justify-start gap-x-1">
           {/*<Image source={icons.star} className="size-4" />*/}
-          <Text className="text-xs text-black font-bold uppercase">
+          <Text className="text-xs text-white font-bold uppercase">
             {amount} st
           </Text>
         </View>
