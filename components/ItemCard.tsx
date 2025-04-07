@@ -16,7 +16,7 @@ const ItemCard = ({
   amount,
 }: Tables<"Item">) => {
   return (
-    <Link href={`/items/${id}`} asChild>
+    <Link href={`/items/${id}`} asChild className="border-2 border-green-800">
       <TouchableOpacity className="w-[30%]">
         <Image
           source={images.highlight}

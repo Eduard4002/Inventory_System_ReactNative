@@ -9,6 +9,10 @@ import {
 import ItemCard from "@/components/ItemCard";
 import useFetch from "@/services/usefetch";
 import { fetchItems } from "@/services/api";
+
+import { enGB, registerTranslation } from "react-native-paper-dates";
+registerTranslation("en", enGB);
+
 export default function Index() {
   const {
     data: items,
@@ -47,7 +51,9 @@ export default function Index() {
         <FlatList
           data={Array.isArray(items) ? items : []}
           renderItem={({ item }) => <ItemCard {...item} />}
-          keyExtractor={(item) => item.id.toString()}
+          keyExtractor={(item) =>
+            item?.id ? item.id.toString() : Math.random().toString()
+          }
           numColumns={3}
           columnWrapperStyle={{
             justifyContent: "flex-start",
