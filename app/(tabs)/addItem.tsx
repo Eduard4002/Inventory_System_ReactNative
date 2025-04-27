@@ -48,24 +48,45 @@ const AddItem = () => {
     [room_type_raw]
   );
   const handleSave = async () => {
-    const insertedItem = await insertItem(item as Tables<"Item">);
-    console.log("Inserted item: ", insertedItem);
+    if (!item.name || !item.amount || !item.measurement_amount) {
+      console.log(
+        "Validation failed: Name, Amount, and Measurement Amount are required."
+      );
+      //TODO: "Not sure if I want to keep the alert on or not, but I will keep it for now"
+      alert("Please fill in all required fields:");
+      return;
+    }
+
+    try {
+      const insertedItem = await insertItem(item as Tables<"Item">);
+      console.log("Inserted item: ", insertedItem);
+    } catch (error) {
+      console.error("Error inserting item: ", error);
+      alert("Failed to save the item. Please try again.");
+    }
   };
   console.log("refreshing...");
 
   const [item, setItem] = useState<Tables<"Item">>({
-    amount: null,
+    amount: 1,
     created_at: new Date(Date.now()).toLocaleDateString(),
     expiry_date: new Date(Date.now()).toLocaleDateString(),
     measurement_amount: null,
-    measurement_type: null,
+    measurement_type:
+      Array.isArray(measurement_type_raw) && measurement_type_raw.length > 0
+        ? (measurement_type_raw[0] as Enums<"measurement_type">)
+        : null,
     name: "",
     price: null,
-    room_type: null,
+    room_type:
+      Array.isArray(room_type_raw) && room_type_raw.length > 0
+        ? (room_type_raw[0] as Enums<"room_type">)
+        : null,
   });
   return (
-    <View className="flex-1 bg-primary  pt-8">
+    <View className="flex-1 bg-primary pt-8">
       <ScrollView
+        className="flex-1 px-5"
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 100 }}
       >
@@ -108,6 +129,7 @@ const AddItem = () => {
                 }
                 placeholder="5"
                 title="Measurement Amount"
+                inputMode="decimal"
               />
               <DropdownInputCustom
                 data={measurement_type}
@@ -145,6 +167,7 @@ const AddItem = () => {
                 }
                 placeholder="5"
                 title="Amount of Items"
+                defaultValue={item.amount?.toString()}
               />
               <View className="mt-4 flex items-center w-full">
                 <TouchableOpacity

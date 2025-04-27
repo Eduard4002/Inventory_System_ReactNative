@@ -21,7 +21,6 @@ const DropdownInputCustom: React.FC<DropdownInputCustomProps> = ({
   data = defaultData,
 }) => {
   const [value, setValue] = useState(data[0].value); // Default value set to the first item in the data array
-  const [isFocus, setIsFocus] = useState(false);
 
   React.useEffect(() => {
     if (data.length > 0) {
@@ -32,7 +31,7 @@ const DropdownInputCustom: React.FC<DropdownInputCustomProps> = ({
   }, [data]);
 
   return (
-    <View className="mt-6 border-blue-700 border-2 p-2">
+    <View className="mt-6  border-2 p-2">
       <Text className="text-white text-xl font-bold p-1">{title}:</Text>
 
       <Dropdown
@@ -47,12 +46,10 @@ const DropdownInputCustom: React.FC<DropdownInputCustomProps> = ({
         labelField="label"
         valueField="value"
         value={value}
-        onFocus={() => setIsFocus(true)}
-        onBlur={() => setIsFocus(false)}
         onChange={(item) => {
           setValue(item.value);
-          setIsFocus(false);
           onValueChange(item.value);
+          console.log("Selected value:", item.label);
         }}
         renderLeftIcon={() => (
           <AntDesign

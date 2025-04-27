@@ -8,9 +8,11 @@ import {
 } from "react-native";
 import ItemCard from "@/components/ItemCard";
 import useFetch from "@/services/usefetch";
-import { fetchItems } from "@/services/api";
+import { fetchItems, fetchEnum } from "@/services/api";
 
 import { enGB, registerTranslation } from "react-native-paper-dates";
+import { useMemo, useState } from "react";
+import DropdownInputCustom from "@/components/Inputs/DropdownInputCustom";
 registerTranslation("en", enGB);
 
 export default function Index() {
@@ -19,26 +21,96 @@ export default function Index() {
     loading: itemsLoading,
     error: itemsError,
   } = useFetch(() => fetchItems({ ID: -1 }));
-  //Generate random items objects using the Item interface
+  const [sortBy, setSortBy] = useState("price_desc");
+  const [filterBy, setFilterBy] = useState("all");
+  const [roomType, setRoomType] = useState("");
 
-  /* const items: Item[] = Array.from({ length: 10 }, (_, index) => ({
-    id: index,
-    name: `Item ${index + 1}`,
-    measurement_unit: "kg",
-    measurement_amount: Math.floor(Math.random() * 10) + 1,
-    room_id: Math.floor(Math.random() * 5) + 1,
-    price: Math.floor(Math.random() * 100) + 1,
-    expiry_date: new Date(Date.now() + Math.floor(Math.random() * 10000000000)),
-    amount: Math.floor(Math.random() * 10) + 1,
-  })); */
+  const sortOptions = [
+    { label: "Price: Expensive to Cheapest", value: "price_desc" },
+    { label: "Price: Cheapest to Expensive", value: "price_asc" },
+    { label: "Expiry Date: Nearest First", value: "expiry_asc" },
+    { label: "Expiry Date: Farthest First", value: "expiry_desc" },
+  ];
+  const filterOptions = [
+    { label: "All Items", value: "all" },
+    { label: "Expired Items", value: "expired" },
+    { label: "Room Type", value: "room_type" }, // Add Room Type filter option
+  ];
+  const {
+    data: room_type_raw,
+    loading: roomLoading,
+    error: roomError,
+  } = useFetch(() => fetchEnum("room_type"));
+  const room_type = useMemo(
+    () =>
+      (room_type_raw as string[] | undefined)?.map((item) => ({
+        label: item,
+        value: item,
+      })),
+    [room_type_raw]
+  );
+
+  const filteredItems = useMemo(() => {
+    if (!Array.isArray(items)) return [];
+    let result = items;
+
+    if (filterBy === "expired") {
+      const currentDate = new Date(Date.now());
+      result = result.filter((item) => {
+        const expiryDate = item.expiry_date
+          ? new Date(item.expiry_date)
+          : new Date(0);
+        return expiryDate.getTime() < currentDate.getTime(); // Compare dates
+      });
+    }
+    // Filter by room type
+    if (filterBy === "room_type" && roomType) {
+      console.log("Filtering by room type:", roomType);
+      result = result.filter((item) => {
+        return item.room_type === roomType;
+      });
+    }
+    return result;
+  }, [items, filterBy, roomType]);
+  const sortedItems = useMemo(() => {
+    if (!Array.isArray(filteredItems)) return [];
+    switch (sortBy) {
+      case "price_desc":
+        return [...filteredItems].sort(
+          (a, b) => (b.price || 0) - (a.price || 0)
+        );
+      case "price_asc":
+        return [...filteredItems].sort(
+          (a, b) => (a.price || 0) - (b.price || 0)
+        );
+
+      case "expiry_asc":
+        return [...filteredItems].sort(
+          (a, b) =>
+            new Date(a.expiry_date || 0).getDate() -
+            new Date(b.expiry_date || 0).getDate()
+        );
+      case "expiry_desc":
+        return [...filteredItems].sort(
+          (a, b) =>
+            new Date(b.expiry_date || 0).getDate() -
+            new Date(a.expiry_date || 0).getDate()
+        );
+      default:
+        return filteredItems;
+    }
+  }, [filteredItems, sortBy]);
 
   return (
-    <View className="flex-1 bg-primary">
+    <View className="flex-1 bg-primary pt-8">
       <ScrollView
         className="flex-1 px-5"
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ minHeight: "100%", paddingBottom: 10 }}
       >
+        <View className="flex-row  p-2 mx-2  border-2 border-accent rounded-md bg-dark-100 self-stretch items-center justify-center">
+          <Text className="text-white text-4xl font-bold">Current Items</Text>
+        </View>
         {itemsLoading ? (
           <ActivityIndicator
             size="large"
@@ -48,8 +120,28 @@ export default function Index() {
         ) : itemsError ? (
           <Text className="text-red-600">Error: {itemsError?.message}</Text>
         ) : null}
+        <DropdownInputCustom
+          title="Sort By"
+          data={sortOptions}
+          onValueChange={(value) => setSortBy(value)}
+        />
+        <DropdownInputCustom
+          title="Filter By"
+          data={filterOptions}
+          onValueChange={(value) => setFilterBy(value)}
+        />
+        {filterBy === "room_type" && (
+          <DropdownInputCustom
+            title="Select Room Type"
+            data={room_type}
+            onValueChange={(value) => setRoomType(value)}
+          />
+        )}
+        <Text className="text-white text-lg font-bold mt-2">
+          Total Items: {filteredItems.length}
+        </Text>
         <FlatList
-          data={Array.isArray(items) ? items : []}
+          data={sortedItems}
           renderItem={({ item }) => <ItemCard {...item} />}
           keyExtractor={(item) =>
             item?.id ? item.id.toString() : Math.random().toString()
@@ -61,7 +153,7 @@ export default function Index() {
             paddingRight: 5,
             marginBottom: 10,
           }}
-          className="mt-2 pb-32"
+          className="mt-6 pb-32"
           scrollEnabled={false}
         />
       </ScrollView>

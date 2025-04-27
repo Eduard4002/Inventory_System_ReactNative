@@ -119,7 +119,10 @@ const ItemDetails = () => {
 
           <View className="flex flex-row justify-between w-1/2">
             <ItemInfo label="Found in: " value={`${item?.room_type}`} />
-            <ItemInfo label="Price per item:" value={`${item?.price} kr`} />
+            <ItemInfo
+              label="Price per item:"
+              value={item?.price ? `${item.price} kr` : "Price not provided"}
+            />
           </View>
         </View>
         <View className="flex-row items-start justify-between mt-5 p-4  border-2 border-accent rounded-md bg-dark-100">
