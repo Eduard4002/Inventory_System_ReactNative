@@ -5,31 +5,19 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 
 interface DropdownInputCustomProps {
   onValueChange: (value: string) => void; // Callback to send the selected value to the parent
-  title?: string; // Title to display above the input
-  data?: Array<{ label: string; value: string }>; // Optional data prop to pass custom data
+  selectedValue: string | null; // <-- Accept the selected value from the parent
+  title?: string;
+  data: Array<{ label: string; value: string }>; // Make data required or handle empty case
+  placeholder?: string; // Optional placeholder
 }
-const defaultData = [
-  { label: "Item 1", value: "1" },
-  { label: "Item 2", value: "2" },
-  { label: "Item 3", value: "3" },
-  { label: "Item 4", value: "4" },
-  { label: "Item 5", value: "5" },
-];
+
 const DropdownInputCustom: React.FC<DropdownInputCustomProps> = ({
   onValueChange,
+  selectedValue,
   title = "Select Value",
-  data = defaultData,
+  data,
+  placeholder = "Select...", // Default placeholder
 }) => {
-  const [value, setValue] = useState(data[0].value); // Default value set to the first item in the data array
-
-  React.useEffect(() => {
-    if (data.length > 0) {
-      setValue(data[0].value); // Set default value to the first item in the data array
-      onValueChange(data[0].value);
-      console.log("Data changed:", data[0].value);
-    }
-  }, [data]);
-
   return (
     <View className="mt-6  border-2 p-2">
       <Text className="text-white text-xl font-bold p-1">{title}:</Text>
@@ -45,11 +33,11 @@ const DropdownInputCustom: React.FC<DropdownInputCustomProps> = ({
         maxHeight={300}
         labelField="label"
         valueField="value"
-        value={value}
+        value={selectedValue}
         onChange={(item) => {
-          setValue(item.value);
+          // Just call the callback passed from the parent
           onValueChange(item.value);
-          console.log("Selected value:", item.label);
+          console.log("Dropdown selected:", item.label);
         }}
         renderLeftIcon={() => (
           <AntDesign

@@ -11,7 +11,7 @@ import {
 } from "react-native";
 import { DatePickerModal } from "react-native-paper-dates";
 
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { icons } from "@/constants/icons";
 import TextInputCustom from "@/components/Inputs/TextInputCustom";
 import DateInputCustom from "@/components/Inputs/DateInputCustom";
@@ -20,33 +20,64 @@ import useFetch from "@/services/usefetch";
 import { fetchEnum, fetchItems, insertItem } from "@/services/api";
 import { Tables, Enums } from "@/database.types";
 const AddItem = () => {
-  const {
-    data: measurement_type_raw,
-    loading: measurementLoading,
-    error: measurementError,
-  } = useFetch(() => fetchEnum("measurement_type"));
+  const [measurementTypeRaw, setMeasurementTypeRaw] = useState<string[] | null>(
+    null
+  );
+  const [roomTypeRaw, setRoomTypeRaw] = useState<string[] | null>(null);
+  const [isLoading, setIsLoading] = useState(true); // Combined loading state
+  const [error, setError] = useState<Error | null>(null);
 
-  const measurement_type = useMemo(
-    () =>
-      (measurement_type_raw as string[] | undefined)?.map((item) => ({
-        label: item,
-        value: item,
-      })),
-    [measurement_type_raw]
+  // --- Effect to fetch data ONCE on component mount ---
+  useEffect(() => {
+    console.log("Fetching enum data on mount...");
+    setIsLoading(true);
+    setError(null);
+
+    // Fetch both enums concurrently
+    Promise.all([fetchEnum("measurement_type"), fetchEnum("room_type")])
+      .then(([measurementData, roomData]) => {
+        console.log("Fetch successful:", measurementData, roomData);
+        setMeasurementTypeRaw(measurementData as string[]);
+        setRoomTypeRaw(roomData as string[]);
+
+        // --- Set initial default values for dropdowns AFTER data is fetched ---
+        setItem((prevItem) => ({
+          ...prevItem,
+          measurement_type: Array.isArray(measurementData)
+            ? (measurementData[0] as Enums<"measurement_type">)
+            : null,
+          room_type: Array.isArray(roomData)
+            ? (roomData[0] as Enums<"room_type">)
+            : null,
+        }));
+        // --- ---
+      })
+      .catch((err) => {
+        console.error("Error fetching enum data:", err);
+        setError(
+          err instanceof Error
+            ? err
+            : new Error("An unknown fetch error occurred")
+        );
+        setMeasurementTypeRaw([]); // Set to empty array on error to avoid issues downstream
+        setRoomTypeRaw([]);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  }, []); // <-- Empty dependency array means this runs only ONCE on mount
+
+  // --- Memoize dropdown data (derived state) ---
+  const measurement_type_options = useMemo(
+    () => measurementTypeRaw?.map((val) => ({ label: val, value: val })) ?? [], // Handle null case
+    [measurementTypeRaw] // Depends only on the fetched raw data state
   );
-  const {
-    data: room_type_raw,
-    loading: roomLoading,
-    error: roomError,
-  } = useFetch(() => fetchEnum("room_type"));
-  const room_type = useMemo(
-    () =>
-      (room_type_raw as string[] | undefined)?.map((item) => ({
-        label: item,
-        value: item,
-      })),
-    [room_type_raw]
+
+  const room_type_options = useMemo(
+    () => roomTypeRaw?.map((val) => ({ label: val, value: val })) ?? [], // Handle null case
+    [roomTypeRaw] // Depends only on the fetched raw data state
   );
+
   const handleSave = async () => {
     if (!item.name || !item.amount || !item.measurement_amount) {
       console.log(
@@ -72,17 +103,12 @@ const AddItem = () => {
     created_at: new Date(Date.now()).toLocaleDateString(),
     expiry_date: new Date(Date.now()).toLocaleDateString(),
     measurement_amount: null,
-    measurement_type:
-      Array.isArray(measurement_type_raw) && measurement_type_raw.length > 0
-        ? (measurement_type_raw[0] as Enums<"measurement_type">)
-        : null,
+    measurement_type: null,
     name: "",
     price: null,
-    room_type:
-      Array.isArray(room_type_raw) && room_type_raw.length > 0
-        ? (room_type_raw[0] as Enums<"room_type">)
-        : null,
+    room_type: null,
   });
+
   return (
     <View className="flex-1 bg-primary pt-8">
       <ScrollView
@@ -94,15 +120,8 @@ const AddItem = () => {
           <View className="flex-row  p-2 mx-2  border-2 border-accent rounded-md bg-dark-100 self-stretch items-center justify-center">
             <Text className="text-white text-4xl font-bold">Add Item</Text>
           </View>
-          {measurementError ? (
-            <Text className="text-red-600">
-              Error: {measurementError?.message}
-            </Text>
-          ) : null}
-          {roomError ? (
-            <Text className="text-red-600">Error: {roomError?.message}</Text>
-          ) : null}
-          {measurementLoading || roomLoading ? (
+          {error ? <Text>Error: {error.message}</Text> : null}
+          {isLoading ? (
             <ActivityIndicator
               size="large"
               color="#0000ff"
@@ -132,24 +151,25 @@ const AddItem = () => {
                 inputMode="decimal"
               />
               <DropdownInputCustom
-                data={measurement_type}
+                data={measurement_type_options}
+                selectedValue={item.measurement_type}
+                placeholder="Select Measurement Type"
                 title="Measurement Type"
-                onValueChange={(text) =>
+                onValueChange={(value) => {
                   setItem({
                     ...item,
-                    measurement_type: text as keyof typeof measurement_type_raw,
-                  })
-                }
+                    measurement_type: value as Enums<"measurement_type">,
+                  });
+                }}
               />
               <DropdownInputCustom
-                data={room_type}
+                data={room_type_options}
+                selectedValue={item.room_type}
+                placeholder="Select Room Type"
                 title="Room Name"
-                onValueChange={(text) =>
-                  setItem({
-                    ...item,
-                    room_type: text as keyof typeof room_type_raw,
-                  })
-                }
+                onValueChange={(value) => {
+                  setItem({ ...item, room_type: value as Enums<"room_type"> });
+                }}
               />
 
               <DateInputCustom

@@ -122,18 +122,24 @@ export default function Index() {
         ) : null}
         <DropdownInputCustom
           title="Sort By"
+          selectedValue={sortBy}
+          placeholder="Select Sort Option"
           data={sortOptions}
           onValueChange={(value) => setSortBy(value)}
         />
         <DropdownInputCustom
           title="Filter By"
+          selectedValue={filterBy}
+          placeholder="Select Filter Option"
           data={filterOptions}
           onValueChange={(value) => setFilterBy(value)}
         />
         {filterBy === "room_type" && (
           <DropdownInputCustom
             title="Select Room Type"
-            data={room_type}
+            data={room_type || []}
+            selectedValue={roomType}
+            placeholder="Select Room Type"
             onValueChange={(value) => setRoomType(value)}
           />
         )}
