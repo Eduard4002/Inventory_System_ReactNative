@@ -17,26 +17,30 @@ const ItemCard = ({
 }: Tables<"Item">) => {
   return (
     <Link href={`/items/${id}`} asChild key={id}>
-      <TouchableOpacity className="w-[30%]">
-        <Image
-          source={images.highlight}
-          className="w-full h-52 rounded-lg"
-          resizeMode="cover"
-        />
-        <Text className="text-sm text-white mt-2" numberOfLines={1}>
-          {name} ({measurement_amount} {measurement_type})
-        </Text>
-        <View className="flex-row items-center justify-start gap-x-1">
-          {/*<Image source={icons.star} className="size-4" />*/}
-          <Text className="text-xs text-white font-bold uppercase">
-            {amount} st
-          </Text>
-        </View>
-        <View className="flex-row items-center justify-between">
-          <Text className="text-xs text-light-300 font-medium mt-1"></Text>
-          {/* <Text className="text-xs font-medium text-light-300 uppercase">
+      <TouchableOpacity className="w-[45%]">
+        <View className="rounded-lg bg-dark-100">
+          <Image
+            source={images.highlight}
+            className="w-full h-52 rounded-lg"
+            resizeMode="cover"
+          />
+          <View className="p-1">
+            <Text className="text-lg text-white mt-2" numberOfLines={1}>
+              {name} ({measurement_amount} {measurement_type})
+            </Text>
+            <View className="flex-row items-center justify-start gap-x-1">
+              {/*<Image source={icons.star} className="size-4" />*/}
+              <Text className="text-sm text-white font-bold uppercase">
+                {amount} st
+              </Text>
+            </View>
+            <View className="flex-row items-center justify-between">
+              <Text className="text-xs text-light-300 font-medium mt-1"></Text>
+              {/* <Text className="text-xs font-medium text-light-300 uppercase">
             Movie
           </Text> */}
+            </View>
+          </View>
         </View>
       </TouchableOpacity>
     </Link>

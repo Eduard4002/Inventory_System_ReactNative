@@ -5,6 +5,7 @@ import {
   Image,
   FlatList,
   ActivityIndicator,
+  ImageBackground,
 } from "react-native";
 import ItemCard from "@/components/ItemCard";
 import useFetch from "@/services/usefetch";
@@ -13,6 +14,7 @@ import { fetchItems, fetchEnum } from "@/services/api";
 import { enGB, registerTranslation } from "react-native-paper-dates";
 import { useMemo, useState } from "react";
 import DropdownInputCustom from "@/components/Inputs/DropdownInputCustom";
+import { background } from "@/constants/background";
 registerTranslation("en", enGB);
 
 export default function Index() {
@@ -102,67 +104,76 @@ export default function Index() {
   }, [filteredItems, sortBy]);
 
   return (
-    <View className="flex-1 bg-primary pt-8">
-      <ScrollView
-        className="flex-1 px-5"
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ minHeight: "100%", paddingBottom: 10 }}
-      >
-        <View className="flex-row  p-2 mx-2  border-2 border-accent rounded-md bg-dark-100 self-stretch items-center justify-center">
-          <Text className="text-white text-4xl font-bold">Current Items</Text>
-        </View>
-        {itemsLoading ? (
-          <ActivityIndicator
-            size="large"
-            color="#0000ff"
-            className="mt-10 self-center"
-          />
-        ) : itemsError ? (
-          <Text className="text-red-600">Error: {itemsError?.message}</Text>
-        ) : null}
-        <DropdownInputCustom
-          title="Sort By"
-          selectedValue={sortBy}
-          placeholder="Select Sort Option"
-          data={sortOptions}
-          onValueChange={(value) => setSortBy(value)}
-        />
-        <DropdownInputCustom
-          title="Filter By"
-          selectedValue={filterBy}
-          placeholder="Select Filter Option"
-          data={filterOptions}
-          onValueChange={(value) => setFilterBy(value)}
-        />
-        {filterBy === "room_type" && (
+    <ImageBackground
+      source={background.bg5}
+      resizeMode="cover"
+      style={{ flex: 1 }}
+    >
+      <View className="flex-1 pt-8">
+        <ScrollView
+          className="flex-1 px-5"
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ minHeight: "100%", paddingBottom: 10 }}
+        >
+          <View className="flex-row  p-2 mx-2  border-2 border-accent rounded-md bg-dark-100 self-stretch items-center justify-center">
+            <Text className="text-text-title text-4xl font-bold">
+              Current Items
+            </Text>
+          </View>
+          {itemsLoading ? (
+            <ActivityIndicator
+              size="large"
+              color="#0000ff"
+              className="mt-10 self-center"
+            />
+          ) : itemsError ? (
+            <Text className="text-red-600">Error: {itemsError?.message}</Text>
+          ) : null}
           <DropdownInputCustom
-            title="Select Room Type"
-            data={room_type || []}
-            selectedValue={roomType}
-            placeholder="Select Room Type"
-            onValueChange={(value) => setRoomType(value)}
+            title="Sort By"
+            selectedValue={sortBy}
+            placeholder="Select Sort Option"
+            data={sortOptions}
+            onValueChange={(value) => setSortBy(value)}
           />
-        )}
-        <Text className="text-white text-lg font-bold mt-2">
-          Total Items: {filteredItems.length}
-        </Text>
-        <FlatList
-          data={sortedItems}
-          renderItem={({ item }) => <ItemCard {...item} />}
-          keyExtractor={(item) =>
-            item?.id ? item.id.toString() : Math.random().toString()
-          }
-          numColumns={3}
-          columnWrapperStyle={{
-            justifyContent: "flex-start",
-            gap: 20,
-            paddingRight: 5,
-            marginBottom: 10,
-          }}
-          className="mt-6 pb-32"
-          scrollEnabled={false}
-        />
-      </ScrollView>
-    </View>
+          <DropdownInputCustom
+            title="Filter By"
+            selectedValue={filterBy}
+            placeholder="Select Filter Option"
+            data={filterOptions}
+            onValueChange={(value) => setFilterBy(value)}
+          />
+          {filterBy === "room_type" && (
+            <DropdownInputCustom
+              title="Select Room Type"
+              data={room_type || []}
+              selectedValue={roomType}
+              placeholder="Select Room Type"
+              onValueChange={(value) => setRoomType(value)}
+            />
+          )}
+          <View className="p-2 mt-2 w-2/3 border-2 border-accent rounded-md bg-dark-100">
+            <Text className="text-text-title text-2xl font-bold">
+              Total Items: {filteredItems.length}
+            </Text>
+          </View>
+          <FlatList
+            data={sortedItems}
+            renderItem={({ item }) => <ItemCard {...item} />}
+            keyExtractor={(item) =>
+              item?.id ? item.id.toString() : Math.random().toString()
+            }
+            numColumns={2}
+            columnWrapperStyle={{
+              justifyContent: "space-between",
+              gap: 20,
+              marginBottom: 10,
+            }}
+            className="mt-6 pb-32"
+            scrollEnabled={false}
+          />
+        </ScrollView>
+      </View>
+    </ImageBackground>
   );
 }
