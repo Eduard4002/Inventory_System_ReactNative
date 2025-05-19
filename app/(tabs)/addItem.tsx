@@ -8,6 +8,8 @@ import {
   Image,
   ScrollView,
   ActivityIndicator,
+  ImageBackground,
+  Dimensions,
 } from "react-native";
 import { DatePickerModal } from "react-native-paper-dates";
 
@@ -19,6 +21,7 @@ import DropdownInputCustom from "@/components/Inputs/DropdownInputCustom";
 import useFetch from "@/services/usefetch";
 import { fetchEnum, fetchItems, insertItem } from "@/services/api";
 import { Tables, Enums } from "@/database.types";
+import { background } from "@/constants/background";
 const AddItem = () => {
   const [measurementTypeRaw, setMeasurementTypeRaw] = useState<string[] | null>(
     null
@@ -108,16 +111,22 @@ const AddItem = () => {
     price: null,
     room_type: null,
   });
+  //Get the dimensions of the screen, so the background image can be set to the size of the screen
+  const d = Dimensions.get("window");
 
   return (
-    <View className="flex-1 bg-primary pt-8">
+    <ImageBackground
+      source={background.bg5}
+      resizeMode="cover"
+      style={{ flex: 1, width: d.width, height: d.height }}
+    >
       <ScrollView
         className="flex-1 px-5"
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 100 }}
       >
         <View className="items-center">
-          <View className="flex-row  p-2 mx-2  border-2 border-accent rounded-md bg-dark-100 self-stretch items-center justify-center">
+          <View className="flex-row  p-2 mx-2  border-4 border-accent rounded-md bg-dark-100 self-stretch items-center justify-center">
             <Text className="text-white text-4xl font-bold">Add Item</Text>
           </View>
           {error ? <Text>Error: {error.message}</Text> : null}
@@ -168,7 +177,10 @@ const AddItem = () => {
                 placeholder="Select Room Type"
                 title="Room Name"
                 onValueChange={(value) => {
-                  setItem({ ...item, room_type: value as Enums<"room_type"> });
+                  setItem({
+                    ...item,
+                    room_type: value as Enums<"room_type">,
+                  });
                 }}
               />
 
@@ -187,21 +199,21 @@ const AddItem = () => {
                 }
                 placeholder="5"
                 title="Amount of Items"
-                defaultValue={item.amount?.toString()}
+                inputMode="decimal"
               />
-              <View className="mt-4 flex items-center w-full">
+              <View className="w-72 h-16 mt-4 flex border-2 border-accent">
                 <TouchableOpacity
-                  className="bg-accent px-6 py-3 rounded-md"
+                  className="bg-dark-200 px-6 py-3 rounded-md items-center"
                   onPress={handleSave}
                 >
-                  <Text className="text-white font-bold text-xl">SAVE</Text>
+                  <Text className="text-white font-bold text-3xl ">SAVE</Text>
                 </TouchableOpacity>
               </View>
             </>
           )}
         </View>
       </ScrollView>
-    </View>
+    </ImageBackground>
   );
 };
 

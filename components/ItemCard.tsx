@@ -20,12 +20,14 @@ const ItemCard = ({
       <TouchableOpacity className="w-[45%]">
         <View className="rounded-lg bg-dark-100">
           <Image
-            source={images.highlight}
-            className="w-full h-52 rounded-lg"
+            className="w-full h-52 rounded-lg bg-dark-200"
             resizeMode="cover"
           />
           <View className="p-1">
-            <Text className="text-lg text-white mt-2" numberOfLines={1}>
+            <Text
+              className="text-lg text-white mt-2 font-bold"
+              numberOfLines={1}
+            >
               {name} ({measurement_amount} {measurement_type})
             </Text>
             <View className="flex-row items-center justify-start gap-x-1">

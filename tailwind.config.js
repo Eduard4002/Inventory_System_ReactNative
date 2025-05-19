@@ -12,6 +12,7 @@ module.exports = {
         text: {
           title: "#ffffff",
           primary: "#00171f",
+          placeholder: "#b8b8b8",
         },
         light: {
           100: "#D6C7FF",
@@ -19,10 +20,10 @@ module.exports = {
           300: "#9CA4AB",
         },
         dark: {
-          100: "#221F3D",
-          200: "#0F0D23",
+          100: "#929292ce",
+          200: "#616161e8",
         },
-        accent: "#AB8BFF",
+        accent: "#ececec",
       },
     },
   },

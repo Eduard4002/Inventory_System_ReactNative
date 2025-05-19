@@ -19,7 +19,7 @@ const DropdownInputCustom: React.FC<DropdownInputCustomProps> = ({
   placeholder = "Select...", // Default placeholder
 }) => {
   return (
-    <View className="mt-6  border-2 p-2">
+    <View className="mt-6 p-2 border-2 border-accent rounded-md bg-dark-100">
       <Text className="text-white text-xl font-bold p-1">{title}:</Text>
 
       <Dropdown
@@ -28,7 +28,7 @@ const DropdownInputCustom: React.FC<DropdownInputCustomProps> = ({
         itemTextStyle={styles.itemTextStyle}
         iconStyle={styles.iconStyle}
         containerStyle={styles.container}
-        activeColor="#AB8BFF"
+        activeColor="#929292ff"
         data={data}
         maxHeight={300}
         labelField="label"
@@ -39,14 +39,14 @@ const DropdownInputCustom: React.FC<DropdownInputCustomProps> = ({
           onValueChange(item.value);
           console.log("Dropdown selected:", item.label);
         }}
-        renderLeftIcon={() => (
+        /* renderLeftIcon={() => (
           <AntDesign
             style={styles.icon}
             color={"white"}
             name="Safety"
             size={20}
           />
-        )}
+        )} */
       />
     </View>
   );
@@ -57,17 +57,17 @@ export default DropdownInputCustom;
 const styles = StyleSheet.create({
   dropdown: {
     width: 250,
-    height: 80,
+    height: 64,
     padding: 8,
-    borderColor: "#AB8BFF",
+    borderColor: "#ececec",
     borderWidth: 2,
 
-    backgroundColor: "#221F3D",
+    backgroundColor: "#616161e8",
   },
   container: {
-    backgroundColor: "#221F3D",
+    backgroundColor: "#424242ff",
     color: "white",
-    borderColor: "#AB8BFF",
+    borderColor: "#ececec",
     borderWidth: 2,
   },
   icon: {

@@ -7,6 +7,8 @@ import {
   TouchableOpacity,
   Button,
   TextInput,
+  ImageBackground,
+  FlatList,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useLocalSearchParams, useRouter } from "expo-router";
@@ -17,18 +19,19 @@ import { fetchItems, updateAmount } from "@/services/api";
 import useFetch from "@/services/usefetch";
 import { Tables } from "@/database.types";
 import { images } from "@/constants/images";
+import { background } from "@/constants/background";
 interface ItemInfoProps {
   label: string;
   value?: string | number | null;
 }
-const ItemInfo = ({ label, value }: ItemInfoProps) => (
-  <View className="flex-col items-start justify-center mt-5">
-    <Text className="text-light-200 font-normal text-l">{label}</Text>
-    <Text className="text-light-100 font-bold text-l mt-2">
-      {value || "N/A"}
-    </Text>
-  </View>
-);
+const ItemInfo = (item: any) => {
+  return (
+    <View className="flex-row items-center mt-2 p-2 border-2 border-accent rounded-md bg-dark-100">
+      <Text className="text-text-title font-bold text-l">{item.label}</Text>
+      <Text className="text-text-title text-l">{item.value}</Text>
+    </View>
+  );
+};
 const ItemDetails = () => {
   const router = useRouter();
   const { id } = useLocalSearchParams();
@@ -76,88 +79,98 @@ const ItemDetails = () => {
   React.useEffect(() => {
     console.log("Updated tempAmount:", tempAmount);
   }, [tempAmount]);
-
+  const ItemInformation = [
+    {
+      label: "Amount",
+      value: `${item?.amount} st`,
+    },
+    {
+      label: "Expires in",
+      value: `${item?.expiry_date}`,
+    },
+    {
+      label: "Added in",
+      value: `${item?.created_at}`,
+    },
+    {
+      label: "Found in",
+      value: `${item?.room_type}`,
+    },
+    {
+      label: "Price per item",
+      value: item?.price ? `${item.price} kr` : "Price not provided",
+    },
+  ];
   return (
-    <View className="bg-primary flex-1">
-      <ScrollView contentContainerStyle={{ paddingBottom: 80 }}>
-        <View>
-          <Image
-            source={images.highlight}
-            className="w-full h-[400px]"
-            resizeMode="contain"
-          />
-          <TouchableOpacity
-            className="absolute top-5 left-5 rounded-full size-14 bg-white flex items-center justify-center"
-            onPress={router.back}
-          >
+    <ImageBackground
+      source={background.bg5}
+      resizeMode="cover"
+      style={{ flex: 1 }}
+    >
+      <View className="bg-primary flex-1">
+        <ScrollView contentContainerStyle={{ paddingBottom: 80 }}>
+          <View>
             <Image
-              source={icons.arrow}
-              className="w-6 h-7 ml-1 rotate-180"
+              className="w-full h-[400px] rounded-lg bg-black"
               resizeMode="cover"
             />
-          </TouchableOpacity>
-        </View>
-
-        <View className="flex-col items-start justify-center mt-5 px-5 border-t-2 border-accent pt-2">
-          <Text className="text-white font-bold text-2xl">
-            {item?.name} ({item?.measurement_amount} {item?.measurement_type})
-          </Text>
-          <View className="flex-row items-center gap-x-1 mt-2">
-            <Text className="text-light-200 text-l">{item?.amount} st</Text>
           </View>
 
-          <View className="flex-row items-center bg-dark-100 px-2 py-1 rounded-md gap-x-1 mt-2">
-            <Text className="text-white font-bold text-l">Expires in:</Text>
-
-            <Text className="text-light-200 text-l">{item?.expiry_date}</Text>
-          </View>
-          <View className="flex-row items-center bg-dark-100 px-2 py-1 rounded-md gap-x-1 mt-2">
-            <Text className="text-white font-bold text-l">Created in:</Text>
-
-            <Text className="text-light-200 text-l">{item?.created_at}</Text>
-          </View>
-
-          <View className="flex flex-row justify-between w-1/2">
-            <ItemInfo label="Found in: " value={`${item?.room_type}`} />
-            <ItemInfo
-              label="Price per item:"
-              value={item?.price ? `${item.price} kr` : "Price not provided"}
+          <View className="flex-col items-start justify-center mt-5 px-5 border-t-4 border-accent pt-2 ">
+            <Text className="text-text-title w-full text-center font-bold text-2xl mt-2 p-2 border-2 border-accent rounded-md bg-dark-100">
+              {item?.name} ({item?.measurement_amount} {item?.measurement_type})
+            </Text>
+            <FlatList
+              data={ItemInformation}
+              numColumns={2}
+              renderItem={ItemInfo}
+              keyExtractor={(item) => item.label}
             />
+            <View className="border-4 border-red-500 w-full grid grid-cols-2 grid-rows-2 gap-4">
+              <ItemInfo label="Amount: " value={`${item?.amount} st`} />
+              <ItemInfo label="Expires in: " value={`${item?.expiry_date}`} />
+              <ItemInfo label="Added in: " value={`${item?.created_at}`} />
+              <ItemInfo label="Found in: " value={`${item?.room_type}`} />
+              <ItemInfo
+                label="Price per item:"
+                value={item?.price ? `${item.price} kr` : "Price not provided"}
+              />
+            </View>
           </View>
-        </View>
-        <View className="flex-row items-start justify-between mt-5 p-4  border-2 border-accent rounded-md bg-dark-100">
-          <TouchableOpacity
-            className="bg-red-600 px-6 py-3 rounded-md"
-            onPress={handleDecrease}
-          >
-            <Text className="text-white font-bold text-2xl">-</Text>
-          </TouchableOpacity>
-          <TextInput
-            editable={false}
-            className="text-white font-bold text-xl "
-            value={tempAmount.toString()} // Bind tempAmount to the value prop
-          />
-
-          <TouchableOpacity
-            className="bg-green-600 px-6 py-3 rounded-md"
-            onPress={handleIncrease}
-          >
-            <Text className="text-white font-bold text-2xl">+</Text>
-          </TouchableOpacity>
-        </View>
-        {/* Conditionally render the Save button */}
-        {tempAmount !== item?.amount && (
-          <View className="mt-4 flex items-center w-full">
+          <View className="flex-row items-start justify-between mt-5 p-4  border-2 border-accent rounded-md bg-dark-100">
             <TouchableOpacity
-              className="bg-accent px-6 py-3 rounded-md"
-              onPress={handleSave}
+              className="bg-red-600 px-6 py-3 rounded-md"
+              onPress={handleDecrease}
             >
-              <Text className="text-white font-bold text-xl">SAVE</Text>
+              <Text className="text-white font-bold text-2xl">-</Text>
+            </TouchableOpacity>
+            <TextInput
+              editable={false}
+              className="text-white font-bold text-xl "
+              value={tempAmount.toString()} // Bind tempAmount to the value prop
+            />
+
+            <TouchableOpacity
+              className="bg-green-600 px-6 py-3 rounded-md"
+              onPress={handleIncrease}
+            >
+              <Text className="text-white font-bold text-2xl">+</Text>
             </TouchableOpacity>
           </View>
-        )}
-      </ScrollView>
-    </View>
+          {/* Conditionally render the Save button */}
+          {tempAmount !== item?.amount && (
+            <View className="mt-4 flex items-center w-full">
+              <TouchableOpacity
+                className="bg-accent px-6 py-3 rounded-md"
+                onPress={handleSave}
+              >
+                <Text className="text-white font-bold text-xl">SAVE</Text>
+              </TouchableOpacity>
+            </View>
+          )}
+        </ScrollView>
+      </View>
+    </ImageBackground>
   );
 };
 
