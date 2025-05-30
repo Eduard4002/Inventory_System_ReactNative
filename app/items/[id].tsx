@@ -9,32 +9,45 @@ import {
   TextInput,
   ImageBackground,
   FlatList,
+  Dimensions,
+  ListRenderItem,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { icons } from "@/constants/icons";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { fetchItems, updateAmount } from "@/services/api";
 import useFetch from "@/services/usefetch";
 import { Tables } from "@/database.types";
 import { images } from "@/constants/images";
 import { background } from "@/constants/background";
-interface ItemInfoProps {
-  label: string;
-  value?: string | number | null;
-}
-const ItemInfo = (item: any) => {
-  return (
-    <View className="flex-row items-center mt-2 p-2 border-2 border-accent rounded-md bg-dark-100">
-      <Text className="text-text-title font-bold text-l">{item.label}</Text>
-      <Text className="text-text-title text-l">{item.value}</Text>
-    </View>
-  );
-};
+import { BlurView } from "expo-blur";
+
+const _renderItem = ({ item }: { item: { label: string; value: string } }) => (
+  <View
+    style={{ width: "47%" }}
+    className="flex-row items-center mt-2 p-2 border-2 border-accent-primary rounded-md bg-dark-100 overflow-auto"
+  >
+    <Text className="text-text-title font-bold text-l">{item.label}: </Text>
+    <Text className="text-text-title text-l">{item.value}</Text>
+  </View>
+);
+const windowDimensions = Dimensions.get("window");
+
 const ItemDetails = () => {
   const router = useRouter();
   const { id } = useLocalSearchParams();
+  const [dimensions, setDimensions] = useState({
+    window: windowDimensions,
+  });
+  //Get the dimensions of the screen, so the background image can be set to the size of the screen
+  useEffect(() => {
+    const subscription = Dimensions.addEventListener("change", ({ window }) => {
+      setDimensions({ window });
+    });
+    return () => subscription?.remove();
+  });
 
   // Count to keep track of the amount to save
 
@@ -105,28 +118,53 @@ const ItemDetails = () => {
     <ImageBackground
       source={background.bg5}
       resizeMode="cover"
-      style={{ flex: 1 }}
+      style={{
+        flex: 1,
+        width: dimensions.window.width,
+        height: dimensions.window.height,
+      }}
+      blurRadius={2}
     >
-      <View className="bg-primary flex-1">
-        <ScrollView contentContainerStyle={{ paddingBottom: 80 }}>
-          <View>
+      <ScrollView
+        contentContainerStyle={{ paddingBottom: 40 }}
+        showsVerticalScrollIndicator={false}
+      >
+        <View className="w-full md:w-3/4 lg:w-1/2 xl:w-1/3 self-center ">
+          <View
+            style={{ height: dimensions.window.height * 0.4 }}
+            className="p-6 "
+          >
             <Image
-              className="w-full h-[400px] rounded-lg bg-black"
+              style={{ height: "100%", width: "100%" }}
+              className="rounded-lg"
               resizeMode="cover"
+              source={background.bg3}
             />
           </View>
 
-          <View className="flex-col items-start justify-center mt-5 px-5 border-t-4 border-accent pt-2 ">
-            <Text className="text-text-title w-full text-center font-bold text-2xl mt-2 p-2 border-2 border-accent rounded-md bg-dark-100">
+          <View className="flex-col items-start justify-center mt-5 px-4 ">
+            <Text className="text-text-title w-full text-center font-bold text-2xl mt-2 p-2 border-2 border-accent-primary rounded-md bg-dark-100">
               {item?.name} ({item?.measurement_amount} {item?.measurement_type})
             </Text>
             <FlatList
+              style={{ width: "100%" }}
               data={ItemInformation}
               numColumns={2}
-              renderItem={ItemInfo}
+              renderItem={_renderItem}
               keyExtractor={(item) => item.label}
+              columnWrapperStyle={{
+                justifyContent: "space-between",
+                flex: 1,
+                gap: 6, // Add spacing between columns
+                marginBottom: 8, // Add spacing between rows
+              }}
+              contentContainerStyle={{
+                paddingVertical: 8,
+                gap: 0,
+              }}
+              scrollEnabled={false} // Prevent FlatList from scrolling inside ScrollView
             />
-            <View className="border-4 border-red-500 w-full grid grid-cols-2 grid-rows-2 gap-4">
+            {/* <View className="border-4 border-red-500 w-full grid grid-cols-2 grid-rows-2 gap-4">
               <ItemInfo label="Amount: " value={`${item?.amount} st`} />
               <ItemInfo label="Expires in: " value={`${item?.expiry_date}`} />
               <ItemInfo label="Added in: " value={`${item?.created_at}`} />
@@ -135,41 +173,47 @@ const ItemDetails = () => {
                 label="Price per item:"
                 value={item?.price ? `${item.price} kr` : "Price not provided"}
               />
-            </View>
-          </View>
-          <View className="flex-row items-start justify-between mt-5 p-4  border-2 border-accent rounded-md bg-dark-100">
-            <TouchableOpacity
-              className="bg-red-600 px-6 py-3 rounded-md"
-              onPress={handleDecrease}
-            >
-              <Text className="text-white font-bold text-2xl">-</Text>
-            </TouchableOpacity>
-            <TextInput
-              editable={false}
-              className="text-white font-bold text-xl "
-              value={tempAmount.toString()} // Bind tempAmount to the value prop
-            />
+            </View> */}
+            <View className="flex-col items-center justify-center mt-5 w-full">
+              <Text className="text-text-title w-full text-center font-bold text-2xl mt-2 p-2 border-2 border-accent-primary rounded-md bg-dark-100">
+                UPDATE AMOUNT
+              </Text>
 
-            <TouchableOpacity
-              className="bg-green-600 px-6 py-3 rounded-md"
-              onPress={handleIncrease}
-            >
-              <Text className="text-white font-bold text-2xl">+</Text>
-            </TouchableOpacity>
-          </View>
-          {/* Conditionally render the Save button */}
-          {tempAmount !== item?.amount && (
-            <View className="mt-4 flex items-center w-full">
-              <TouchableOpacity
-                className="bg-accent px-6 py-3 rounded-md"
-                onPress={handleSave}
-              >
-                <Text className="text-white font-bold text-xl">SAVE</Text>
-              </TouchableOpacity>
+              <View className="flex-row items-center justify-between mt-5 p-4  border-2 border-accent-primary rounded-md bg-dark-100 w-3/4 self-center">
+                <TouchableOpacity
+                  className="bg-red-600 px-6 py-3 rounded-md"
+                  onPress={handleDecrease}
+                >
+                  <Text className="text-white font-bold text-2xl">-</Text>
+                </TouchableOpacity>
+                <Text className="text-white font-bold text-2xl  ">
+                  {tempAmount.toString()}
+                </Text>
+
+                <TouchableOpacity
+                  className="bg-green-600 px-6 py-3 rounded-md"
+                  onPress={handleIncrease}
+                >
+                  <Text className="text-white font-bold text-2xl">+</Text>
+                </TouchableOpacity>
+              </View>
+              {/* Conditionally render the Save button */}
+              {tempAmount !== item?.amount && (
+                <View className="text-text-title w-1/2 flex items-center font-bold text-2xl mt-2 p-2 border-2 border-accent-primary rounded-md bg-dark-100">
+                  <TouchableOpacity
+                    className="bg-accent-dark px-6 py-3 rounded-md w-full"
+                    onPress={handleSave}
+                  >
+                    <Text className="text-white font-bold text-xl text-center">
+                      SAVE
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              )}
             </View>
-          )}
-        </ScrollView>
-      </View>
+          </View>
+        </View>
+      </ScrollView>
     </ImageBackground>
   );
 };

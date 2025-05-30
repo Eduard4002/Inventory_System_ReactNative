@@ -5,11 +5,22 @@ import { BlurView } from "expo-blur";
 import React from "react";
 import { icons } from "@/constants/icons";
 import { images } from "@/constants/images";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import AntDesign from "@expo/vector-icons/AntDesign";
+import Entypo from "@expo/vector-icons/Entypo";
+
+import Index from ".";
+import AddItem from "./addItem";
+import Profile from "./profile";
+
 const TabIcon = ({ focused, icon, title }: any) => {
   return (
-    <View className="flex-row min-w-[112px] min-h-14 mt-2">
+    <View
+      style={{ height: 56, width: "100%" }}
+      className="flex-row border-2 border-blue-400"
+    >
       {focused ? (
-        <View className=" flex-row w-full max-h-14 justify-center items-center overflow-hidden bg-dark-200 ">
+        <View className="flex-row w-full justify-center items-center bg-dark-200 ">
           <Image source={icon} tintColor="#a1a1a1" className="size-5" />
           <Text className="text-text-title text-base font-semibold ml-2">
             {title}
@@ -42,66 +53,55 @@ const TabIcon = ({ focused, icon, title }: any) => {
   ); */
 };
 const _Layout = () => {
+  const Tab = createBottomTabNavigator();
+
   return (
-    <Tabs
-      screenOptions={{
-        tabBarShowLabel: false,
+    <Tab.Navigator
+      initialRouteName="index"
+      screenOptions={({ route }) => ({
+        headerShown: false,
+        animation: "shift",
+
+        tabBarActiveBackgroundColor: "#000000",
+        tabBarInactiveTintColor: "#616161",
+        tabBarActiveTintColor: "#ececec",
         tabBarBackground() {
           return (
             <BlurView
-              blurReductionFactor={10}
-              experimentalBlurMethod="dimezisBlurView"
-              intensity={100}
+              intensity={90}
+              tint="regular"
               style={{
                 position: "absolute",
-                top: 0,
-                left: 0,
-                right: 0,
-                bottom: 0,
+                width: "100%",
+                height: "100%",
               }}
             />
           );
         },
 
         tabBarStyle: {
+          borderTopWidth: 2,
+          borderTopColor: "#ececec",
           position: "absolute",
         },
-
+        tabBarShowLabel: false,
         tabBarHideOnKeyboard: true,
-      }}
-    >
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: "Items",
-          headerShown: false,
 
-          tabBarIcon: ({ focused }) => (
-            <TabIcon focused={focused} icon={icons.home} title="Items" />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="addItem"
-        options={{
-          title: "Add",
-          headerShown: false,
-          tabBarIcon: ({ focused }) => (
-            <TabIcon focused={focused} icon={icons.star} title="Add" />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="profile"
-        options={{
-          title: "Profile",
-          headerShown: false,
-          tabBarIcon: ({ focused }) => (
-            <TabIcon focused={focused} icon={icons.person} title="Profile" />
-          ),
-        }}
-      />
-    </Tabs>
+        tabBarIcon: ({ focused, color, size }) => {
+          if (route.name === "index") {
+            return <Entypo name="home" size={size} color={color} />;
+          } else if (route.name === "addItem") {
+            return <Entypo name="plus" size={size} color={color} />;
+          } else if (route.name === "profile") {
+            return <AntDesign name="profile" size={size} color={color} />;
+          }
+        },
+      })}
+    >
+      <Tab.Screen name="index" component={Index} />
+      <Tab.Screen name="addItem" component={AddItem} />
+      <Tab.Screen name="profile" component={Profile} />
+    </Tab.Navigator>
   );
 };
 

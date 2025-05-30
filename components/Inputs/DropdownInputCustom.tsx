@@ -19,7 +19,7 @@ const DropdownInputCustom: React.FC<DropdownInputCustomProps> = ({
   placeholder = "Select...", // Default placeholder
 }) => {
   return (
-    <View className="mt-6 p-2 border-2 border-accent rounded-md bg-dark-100">
+    <View className="mt-6 p-2 border-2 border-accent-primary rounded-md bg-dark-100">
       <Text className="text-white text-xl font-bold p-1">{title}:</Text>
 
       <Dropdown
@@ -56,7 +56,7 @@ export default DropdownInputCustom;
 
 const styles = StyleSheet.create({
   dropdown: {
-    width: 250,
+    width: 288,
     height: 64,
     padding: 8,
     borderColor: "#ececec",

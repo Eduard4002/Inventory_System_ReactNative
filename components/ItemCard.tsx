@@ -4,6 +4,7 @@ import { Link } from "expo-router";
 import { icons } from "@/constants/icons";
 import { images } from "@/constants/images";
 import { Database, Tables, Enums } from "@/database.types";
+import { background } from "@/constants/background";
 
 const ItemCard = ({
   id,
@@ -17,11 +18,13 @@ const ItemCard = ({
 }: Tables<"Item">) => {
   return (
     <Link href={`/items/${id}`} asChild key={id}>
-      <TouchableOpacity className="w-[45%]">
+      <TouchableOpacity style={{ height: 256, width: "45%" }}>
         <View className="rounded-lg bg-dark-100">
           <Image
-            className="w-full h-52 rounded-lg bg-dark-200"
+            className=" rounded-lg bg-dark-200"
             resizeMode="cover"
+            style={{ width: "100%", height: 208 }}
+            source={background.bg3}
           />
           <View className="p-1">
             <Text

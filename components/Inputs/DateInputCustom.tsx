@@ -36,12 +36,15 @@ const DateInputCustom: React.FC<DateInputCustomProps> = ({
     [setOpen, setDate, onDateChange]
   );
   return (
-    <View className="mt-6 p-2 border-2 border-accent rounded-md bg-dark-100">
+    <View className="mt-6 p-2 border-2 border-accent-primary rounded-md bg-dark-100">
       <Text className="text-white text-xl font-bold p-1">{title}:</Text>
 
-      <View className="w-72 h-18 flex-row items-start justify-between p-2  border-2 border-accent rounded-md bg-dark-200">
+      <View
+        style={{ width: 288, height: 64 }}
+        className="flex-row items-center justify-between p-2  border-2 border-accent-primary rounded-md bg-dark-200"
+      >
         <TextInput
-          className="text-white font-bold text-xl "
+          className="text-white font-bold text-xl w-2/3 "
           inputMode="text"
           value={date.toLocaleDateString()}
           placeholderTextColor="#A8B5DB"
@@ -49,7 +52,7 @@ const DateInputCustom: React.FC<DateInputCustomProps> = ({
         />
         <TouchableOpacity
           onPress={() => setOpen(true)}
-          className="bg-dark-100 p-4 rounded-md"
+          className="bg-dark-100 p-2 rounded-md"
         >
           <Image source={icons.star} />
         </TouchableOpacity>

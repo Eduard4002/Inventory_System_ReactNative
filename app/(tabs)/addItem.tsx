@@ -22,6 +22,9 @@ import useFetch from "@/services/usefetch";
 import { fetchEnum, fetchItems, insertItem } from "@/services/api";
 import { Tables, Enums } from "@/database.types";
 import { background } from "@/constants/background";
+
+const windowDimensions = Dimensions.get("window");
+
 const AddItem = () => {
   const [measurementTypeRaw, setMeasurementTypeRaw] = useState<string[] | null>(
     null
@@ -29,6 +32,17 @@ const AddItem = () => {
   const [roomTypeRaw, setRoomTypeRaw] = useState<string[] | null>(null);
   const [isLoading, setIsLoading] = useState(true); // Combined loading state
   const [error, setError] = useState<Error | null>(null);
+
+  const [dimensions, setDimensions] = useState({
+    window: windowDimensions,
+  });
+  //Get the dimensions of the screen, so the background image can be set to the size of the screen
+  useEffect(() => {
+    const subscription = Dimensions.addEventListener("change", ({ window }) => {
+      setDimensions({ window });
+    });
+    return () => subscription?.remove();
+  });
 
   // --- Effect to fetch data ONCE on component mount ---
   useEffect(() => {
@@ -111,108 +125,116 @@ const AddItem = () => {
     price: null,
     room_type: null,
   });
-  //Get the dimensions of the screen, so the background image can be set to the size of the screen
-  const d = Dimensions.get("window");
 
   return (
     <ImageBackground
       source={background.bg5}
       resizeMode="cover"
-      style={{ flex: 1, width: d.width, height: d.height }}
+      style={{
+        flex: 1,
+        width: dimensions.window.width,
+        height: dimensions.window.height,
+      }}
+      blurRadius={2}
     >
-      <ScrollView
-        className="flex-1 px-5"
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: 100 }}
-      >
-        <View className="items-center">
-          <View className="flex-row  p-2 mx-2  border-4 border-accent rounded-md bg-dark-100 self-stretch items-center justify-center">
-            <Text className="text-white text-4xl font-bold">Add Item</Text>
-          </View>
-          {error ? <Text>Error: {error.message}</Text> : null}
-          {isLoading ? (
-            <ActivityIndicator
-              size="large"
-              color="#0000ff"
-              className="mt-10 self-center"
-            />
-          ) : (
-            <>
-              <TextInputCustom
-                onChangeText={(text) => setItem({ ...item, name: text })}
-                placeholder="Brasno"
-                title="Name"
+      <View className="flex-1 pt-8">
+        <ScrollView
+          className="flex-1 px-5 "
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ paddingBottom: 100 }}
+        >
+          <View className="w-full md:w-3/4 lg:w-1/2 xl:w-1/3 self-center items-center">
+            <View className="flex-row  p-2 mx-2  border-4 border-accent-primary rounded-md bg-dark-100 self-stretch items-center justify-center">
+              <Text className="text-white text-4xl font-bold">Add Item</Text>
+            </View>
+            {error ? <Text>Error: {error.message}</Text> : null}
+            {isLoading ? (
+              <ActivityIndicator
+                size="large"
+                color="#0000ff"
+                className="mt-10 self-center"
               />
-              <TextInputCustom
-                onChangeText={(text) =>
-                  setItem({ ...item, price: parseFloat(text) })
-                }
-                placeholder="19"
-                title="Price"
-                inputMode="decimal"
-              />
-              <TextInputCustom
-                onChangeText={(text) =>
-                  setItem({ ...item, measurement_amount: parseFloat(text) })
-                }
-                placeholder="5"
-                title="Measurement Amount"
-                inputMode="decimal"
-              />
-              <DropdownInputCustom
-                data={measurement_type_options}
-                selectedValue={item.measurement_type}
-                placeholder="Select Measurement Type"
-                title="Measurement Type"
-                onValueChange={(value) => {
-                  setItem({
-                    ...item,
-                    measurement_type: value as Enums<"measurement_type">,
-                  });
-                }}
-              />
-              <DropdownInputCustom
-                data={room_type_options}
-                selectedValue={item.room_type}
-                placeholder="Select Room Type"
-                title="Room Name"
-                onValueChange={(value) => {
-                  setItem({
-                    ...item,
-                    room_type: value as Enums<"room_type">,
-                  });
-                }}
-              />
+            ) : (
+              <>
+                <TextInputCustom
+                  onChangeText={(text) => setItem({ ...item, name: text })}
+                  placeholder="Brasno"
+                  title="Name"
+                />
+                <TextInputCustom
+                  onChangeText={(text) =>
+                    setItem({ ...item, price: parseFloat(text) })
+                  }
+                  placeholder="19"
+                  title="Price"
+                  inputMode="decimal"
+                />
+                <TextInputCustom
+                  onChangeText={(text) =>
+                    setItem({ ...item, measurement_amount: parseFloat(text) })
+                  }
+                  placeholder="5"
+                  title="Measurement Amount"
+                  inputMode="decimal"
+                />
+                <DropdownInputCustom
+                  data={measurement_type_options}
+                  selectedValue={item.measurement_type}
+                  placeholder="Select Measurement Type"
+                  title="Measurement Type"
+                  onValueChange={(value) => {
+                    setItem({
+                      ...item,
+                      measurement_type: value as Enums<"measurement_type">,
+                    });
+                  }}
+                />
+                <DropdownInputCustom
+                  data={room_type_options}
+                  selectedValue={item.room_type}
+                  placeholder="Select Room Type"
+                  title="Room Name"
+                  onValueChange={(value) => {
+                    setItem({
+                      ...item,
+                      room_type: value as Enums<"room_type">,
+                    });
+                  }}
+                />
 
-              <DateInputCustom
-                onDateChange={(text) =>
-                  setItem({
-                    ...item,
-                    expiry_date: new Date(text).toLocaleDateString(),
-                  })
-                }
-                title="Expiry Date"
-              />
-              <TextInputCustom
-                onChangeText={(text) =>
-                  setItem({ ...item, amount: parseFloat(text) })
-                }
-                placeholder="5"
-                title="Amount of Items"
-                inputMode="decimal"
-              />
-              <View className="w-72 h-16 mt-4 flex border-2 border-accent">
-                <TouchableOpacity
-                  className="bg-dark-200 px-6 py-3 rounded-md items-center"
-                  onPress={handleSave}
+                <DateInputCustom
+                  onDateChange={(text) =>
+                    setItem({
+                      ...item,
+                      expiry_date: new Date(text).toLocaleDateString(),
+                    })
+                  }
+                  title="Expiry Date"
+                />
+                <TextInputCustom
+                  onChangeText={(text) =>
+                    setItem({ ...item, amount: parseFloat(text) })
+                  }
+                  placeholder="5"
+                  title="Amount of Items"
+                  inputMode="decimal"
+                />
+                <View
+                  style={{ width: 288 }}
+                  className="h-16 mt-4 flex border-2 border-accent-primary"
                 >
-                  <Text className="text-white font-bold text-3xl ">SAVE</Text>
-                </TouchableOpacity>
-              </View>
-            </>
-          )}
-        </View>
-      </ScrollView>
+                  <TouchableOpacity
+                    className="bg-dark-200 flex-1 justify-center  rounded-md items-center"
+                    onPress={handleSave}
+                  >
+                    <Text className="text-white font-bold text-3xl ">SAVE</Text>
+                  </TouchableOpacity>
+                </View>
+              </>
+            )}
+          </View>
+        </ScrollView>
+      </View>
     </ImageBackground>
   );
 };

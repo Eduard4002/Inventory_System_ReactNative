@@ -31,12 +31,15 @@ const TextInputCustom: React.FC<TextInputCustomProps> = ({
   };
 
   return (
-    <View className="mt-6 p-2 border-2 border-accent rounded-md bg-dark-100">
+    <View className="mt-6 p-2 border-2 border-accent-primary rounded-md bg-dark-100">
       <Text className="text-text-title text-xl font-bold p-1">{title}:</Text>
 
-      <View className="w-72 h-16 flex-row items-center justify-center px-2 border-2 border-accent rounded-md bg-dark-200">
+      <View
+        style={{ width: 288, height: 64 }}
+        className="flex-row items-center justify-center px-2 border-2 border-accent-primary rounded-md bg-dark-200"
+      >
         <TextInput
-          className="text-text-title font-bold text-xl absolute w-full h-full"
+          className="text-text-title font-bold text-xl absolute w-full h-full p-2"
           inputMode={inputMode}
           placeholder={placeholder}
           placeholderTextColor="#b8b8b8"
