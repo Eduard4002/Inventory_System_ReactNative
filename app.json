@@ -11,6 +11,9 @@
     "ios": {
       "supportsTablet": true
     },
+    "androidStatusBar": {
+      "translucent": true
+    },
     "android": {
       "softwareKeyboardLayoutMode": "pan",
       "adaptiveIcon": {
@@ -34,6 +37,10 @@
           "resizeMode": "contain",
           "backgroundColor": "#ffffff"
         }
+      ],
+      [
+        "react-native-vision-camera",
+        { "cameraPermissionText": "Application needs access to your Camera." }
       ]
     ],
     "experiments": {
