@@ -13,45 +13,6 @@ import Index from ".";
 import AddItem from "./addItem";
 import Profile from "./profile";
 
-const TabIcon = ({ focused, icon, title }: any) => {
-  return (
-    <View
-      style={{ height: 56, width: "100%" }}
-      className="flex-row border-2 border-blue-400"
-    >
-      {focused ? (
-        <View className="flex-row w-full justify-center items-center bg-dark-200 ">
-          <Image source={icon} tintColor="#a1a1a1" className="size-5" />
-          <Text className="text-text-title text-base font-semibold ml-2">
-            {title}
-          </Text>
-        </View>
-      ) : (
-        <View className="size-full justify-center items-center">
-          <Image source={icon} tintColor="#929292" className="size-5" />
-        </View>
-      )}
-    </View>
-  );
-  /* if (focused) {
-    return (
-      <ImageBackground
-        source={images.highlight}
-        className="flex-row flex-1 min-w-[112px] min-h-14 mt-4 justify-center items-center rounded-full overflow-hidden border-2 border-blue-200"
-      >
-        <Image source={icon} tintColor="#151312" className="size-5" />
-        <Text className="text-secondary text-base font-semibold ml-2">
-          {title}
-        </Text>
-      </ImageBackground>
-    );
-  }
-  return (
-    <View className="size-full justify-center items-center mt-4 border-2 border-blue-200">
-      <Image source={icon} tintColor="#A8B5DB" className="size-5" />
-    </View>
-  ); */
-};
 const _Layout = () => {
   const Tab = createBottomTabNavigator();
 
@@ -83,6 +44,7 @@ const _Layout = () => {
           borderTopWidth: 2,
           borderTopColor: "#ececec",
           position: "absolute",
+          height: 56,
         },
         tabBarShowLabel: false,
         tabBarHideOnKeyboard: true,

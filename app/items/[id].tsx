@@ -164,16 +164,7 @@ const ItemDetails = () => {
               }}
               scrollEnabled={false} // Prevent FlatList from scrolling inside ScrollView
             />
-            {/* <View className="border-4 border-red-500 w-full grid grid-cols-2 grid-rows-2 gap-4">
-              <ItemInfo label="Amount: " value={`${item?.amount} st`} />
-              <ItemInfo label="Expires in: " value={`${item?.expiry_date}`} />
-              <ItemInfo label="Added in: " value={`${item?.created_at}`} />
-              <ItemInfo label="Found in: " value={`${item?.room_type}`} />
-              <ItemInfo
-                label="Price per item:"
-                value={item?.price ? `${item.price} kr` : "Price not provided"}
-              />
-            </View> */}
+
             <View className="flex-col items-center justify-center mt-5 w-full">
               <Text className="text-text-title w-full text-center font-bold text-2xl mt-2 p-2 border-2 border-accent-primary rounded-md bg-dark-100">
                 UPDATE AMOUNT

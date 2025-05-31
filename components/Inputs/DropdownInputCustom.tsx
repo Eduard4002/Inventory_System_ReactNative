@@ -39,6 +39,8 @@ const DropdownInputCustom: React.FC<DropdownInputCustomProps> = ({
           onValueChange(item.value);
           console.log("Dropdown selected:", item.label);
         }}
+        placeholder={placeholder}
+        placeholderStyle={styles.itemTextStyle}
         /* renderLeftIcon={() => (
           <AntDesign
             style={styles.icon}

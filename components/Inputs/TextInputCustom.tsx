@@ -3,6 +3,7 @@ import React, { useState } from "react";
 interface TextInputCustomProps {
   onChangeText: (text: string) => void;
   placeholder?: string;
+  value: string | null;
   title?: string;
   inputMode?:
     | "decimal"
@@ -13,23 +14,15 @@ interface TextInputCustomProps {
     | "tel"
     | "text"
     | "url";
-  defaultValue?: string;
 }
 
 const TextInputCustom: React.FC<TextInputCustomProps> = ({
   onChangeText,
+  value,
   placeholder = "Enter text",
   title = "Title",
   inputMode = "text",
-  defaultValue = "",
 }) => {
-  const [value, setValue] = useState(defaultValue);
-
-  const handleTextChange = (text: string) => {
-    setValue(text); // Update local state
-    onChangeText(text); // Send the updated value to the parent
-  };
-
   return (
     <View className="mt-6 p-2 border-2 border-accent-primary rounded-md bg-dark-100">
       <Text className="text-text-title text-xl font-bold p-1">{title}:</Text>
@@ -43,8 +36,8 @@ const TextInputCustom: React.FC<TextInputCustomProps> = ({
           inputMode={inputMode}
           placeholder={placeholder}
           placeholderTextColor="#b8b8b8"
-          value={value} // Bind the value to the state
-          onChangeText={handleTextChange} // Trigger the callback on text change
+          value={value ?? " "} // Bind the value to the state
+          onChangeText={onChangeText} // Trigger the callback on text change
         />
       </View>
     </View>
