@@ -10,13 +10,14 @@ import {
 } from "react-native";
 import ItemCard from "@/components/ItemCard";
 import useFetch from "@/services/usefetch";
-import { fetchItems, fetchEnum } from "@/services/api";
+import { fetchItems } from "@/services/api";
 
 import { enGB, registerTranslation } from "react-native-paper-dates";
 import { useEffect, useMemo, useState } from "react";
 import DropdownInputCustom from "@/components/Inputs/DropdownInputCustom";
 import { background } from "@/constants/background";
 import { BlurView } from "expo-blur";
+import { Constants } from "@/database.types";
 registerTranslation("en", enGB);
 
 const windowDimensions = Dimensions.get("window");
@@ -52,19 +53,11 @@ export default function Index() {
     { label: "Expired Items", value: "expired" },
     { label: "Room Type", value: "room_type" }, // Add Room Type filter option
   ];
-  const {
-    data: room_type_raw,
-    loading: roomLoading,
-    error: roomError,
-  } = useFetch(() => fetchEnum("room_type"));
-  const room_type = useMemo(
-    () =>
-      (room_type_raw as string[] | undefined)?.map((item) => ({
-        label: item,
-        value: item,
-      })),
-    [room_type_raw]
-  );
+
+  const room_type = Constants.public.Enums.room_type.map((value) => ({
+    label: value,
+    value: value,
+  }));
 
   const filteredItems = useMemo(() => {
     if (!Array.isArray(items)) return [];

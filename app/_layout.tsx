@@ -9,6 +9,8 @@ import {
 import "./globals.css";
 import React from "react";
 import { StatusBar } from "react-native";
+import "react-native-url-polyfill/auto";
+
 export default function RootLayout() {
   const { hasPermission, requestPermission } = useCameraPermission();
 

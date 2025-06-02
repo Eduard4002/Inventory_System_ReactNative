@@ -138,7 +138,9 @@ const ItemDetails = () => {
               style={{ height: "100%", width: "100%" }}
               className="rounded-lg"
               resizeMode="cover"
-              source={background.bg3}
+              source={
+                item?.image_url ? { uri: item?.image_url } : background.bg3
+              }
             />
           </View>
 

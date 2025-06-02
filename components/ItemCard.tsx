@@ -15,6 +15,7 @@ const ItemCard = ({
   price,
   expiry_date,
   amount,
+  image_url,
 }: Tables<"Item">) => {
   return (
     <Link href={`/items/${id}`} asChild key={id}>
@@ -24,7 +25,7 @@ const ItemCard = ({
             className=" rounded-lg bg-dark-200"
             resizeMode="cover"
             style={{ width: "100%", height: 208 }}
-            source={background.bg3}
+            source={image_url ? { uri: image_url } : background.bg3}
           />
           <View className="p-1">
             <Text
