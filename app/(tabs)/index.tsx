@@ -17,17 +17,49 @@ import { useEffect, useMemo, useState } from "react";
 import DropdownInputCustom from "@/components/Inputs/DropdownInputCustom";
 import { background } from "@/constants/background";
 import { BlurView } from "expo-blur";
-import { Constants } from "@/database.types";
+import { Constants, Tables } from "@/database.types";
+import supabase from "@/services/supabase";
 registerTranslation("en", enGB);
 
 const windowDimensions = Dimensions.get("window");
 
 export default function Index() {
+  const [items, setItems] = useState<Tables<"Item">[]>([]);
+
+  // Listen to the changes in the items table so that the items are updated in real-time
   const {
-    data: items,
+    data,
     loading: itemsLoading,
     error: itemsError,
-  } = useFetch(() => fetchItems({ ID: -1 }));
+  } = useFetch(() =>
+    fetchItems({ ID: -1 }).then((data) => {
+      setItems(data as Tables<"Item">[]);
+    })
+  );
+  useEffect(() => {
+    const channel = supabase
+      .channel("schema-db-changes")
+      .on(
+        "postgres_changes",
+        {
+          event: "INSERT",
+          schema: "public",
+          table: "Item",
+        },
+        (payload) => {
+          console.log("Change received!", payload);
+          // Add the new item to the beginning of our existing list in the state
+          setItems((currentItems) => [
+            payload.new as Tables<"Item">,
+            ...currentItems,
+          ]);
+        }
+      )
+      .subscribe();
+    return () => {
+      channel.unsubscribe();
+    };
+  }, []);
   const [sortBy, setSortBy] = useState("price_desc");
   const [filterBy, setFilterBy] = useState("all");
   const [roomType, setRoomType] = useState("");

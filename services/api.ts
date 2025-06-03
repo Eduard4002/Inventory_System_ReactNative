@@ -17,7 +17,7 @@ export const fetchItems = async ({ ID }: { ID: number }) => {
       console.error("Error fetching item:", error.message);
       throw new Error(error.message);
     }
-    return data;
+    return data as Tables<"Item">;
   } else {
     const { data, error } = await supabase.from("Item").select("*");
     if (error) {
@@ -25,7 +25,7 @@ export const fetchItems = async ({ ID }: { ID: number }) => {
       throw new Error(error.message);
     }
 
-    return data;
+    return data as Tables<"Item">[];
   }
 };
 
