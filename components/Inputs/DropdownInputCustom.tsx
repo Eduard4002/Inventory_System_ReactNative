@@ -65,6 +65,7 @@ const styles = StyleSheet.create({
     borderWidth: 2,
 
     backgroundColor: "#616161e8",
+    borderRadius: 6,
   },
   container: {
     backgroundColor: "#424242ff",

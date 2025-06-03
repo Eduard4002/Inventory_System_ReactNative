@@ -19,12 +19,14 @@ import { background } from "@/constants/background";
 import { BlurView } from "expo-blur";
 import { Constants, Tables } from "@/database.types";
 import supabase from "@/services/supabase";
+import SearchBar from "@/components/SearchBar";
 registerTranslation("en", enGB);
 
 const windowDimensions = Dimensions.get("window");
 
 export default function Index() {
   const [items, setItems] = useState<Tables<"Item">[]>([]);
+  const [searchQuery, setSearchQuery] = useState("");
 
   // Listen to the changes in the items table so that the items are updated in real-time
   const {
@@ -111,8 +113,16 @@ export default function Index() {
         return item.room_type === roomType;
       });
     }
+    if (searchQuery) {
+      // Make search case-insensitive by converting both to lower case
+      const lowercasedQuery = searchQuery.toLowerCase();
+      result = result.filter((item) => {
+        // Check if the item's name includes the search query
+        return item.name?.toLowerCase().includes(lowercasedQuery);
+      });
+    }
     return result;
-  }, [items, filterBy, roomType]);
+  }, [items, filterBy, roomType, searchQuery]);
   const sortedItems = useMemo(() => {
     if (!Array.isArray(filteredItems)) return [];
     switch (sortBy) {
@@ -173,6 +183,7 @@ export default function Index() {
             ) : itemsError ? (
               <Text className="text-red-600">Error: {itemsError?.message}</Text>
             ) : null}
+            <SearchBar value={searchQuery} onSearchChange={setSearchQuery} />
             <DropdownInputCustom
               title="Sort By"
               selectedValue={sortBy}
