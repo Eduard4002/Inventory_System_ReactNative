@@ -129,83 +129,94 @@ const ItemDetails = () => {
         contentContainerStyle={{ paddingBottom: 40 }}
         showsVerticalScrollIndicator={false}
       >
-        <View className="w-full md:w-3/4 lg:w-1/2 xl:w-1/3 self-center ">
-          <View
-            style={{ height: dimensions.window.height * 0.4 }}
-            className="p-6 "
-          >
-            <Image
-              style={{ height: "100%", width: "100%" }}
-              className="rounded-lg"
-              resizeMode="cover"
-              source={
-                item?.image_url ? { uri: item?.image_url } : background.bg3
-              }
-            />
-          </View>
+        {itemsLoading ? (
+          <ActivityIndicator
+            size="large"
+            color="#0000ff"
+            className="mt-10 self-center"
+          />
+        ) : itemsError ? (
+          <Text className="text-red-600">Error: {itemsError?.message}</Text>
+        ) : item ? (
+          <View className="w-full md:w-3/4 lg:w-1/2 xl:w-1/3 self-center ">
+            <View
+              style={{ height: dimensions.window.height * 0.4 }}
+              className="p-6 "
+            >
+              <Image
+                style={{ height: "100%", width: "100%" }}
+                className="rounded-lg"
+                resizeMode="cover"
+                source={
+                  item?.image_url ? { uri: item?.image_url } : background.bg3
+                }
+              />
+            </View>
 
-          <View className="flex-col items-start justify-center mt-5 px-4 ">
-            <Text className="text-text-title w-full text-center font-bold text-2xl mt-2 p-2 border-2 border-accent-primary rounded-md bg-dark-100">
-              {item?.name} ({item?.measurement_amount} {item?.measurement_type})
-            </Text>
-            <FlatList
-              style={{ width: "100%" }}
-              data={ItemInformation}
-              numColumns={2}
-              renderItem={_renderItem}
-              keyExtractor={(item) => item.label}
-              columnWrapperStyle={{
-                justifyContent: "space-between",
-                flex: 1,
-                gap: 6, // Add spacing between columns
-                marginBottom: 8, // Add spacing between rows
-              }}
-              contentContainerStyle={{
-                paddingVertical: 8,
-                gap: 0,
-              }}
-              scrollEnabled={false} // Prevent FlatList from scrolling inside ScrollView
-            />
-
-            <View className="flex-col items-center justify-center mt-5 w-full">
+            <View className="flex-col items-start justify-center mt-5 px-4 ">
               <Text className="text-text-title w-full text-center font-bold text-2xl mt-2 p-2 border-2 border-accent-primary rounded-md bg-dark-100">
-                UPDATE AMOUNT
+                {item?.name} ({item?.measurement_amount}{" "}
+                {item?.measurement_type})
               </Text>
+              <FlatList
+                style={{ width: "100%" }}
+                data={ItemInformation}
+                numColumns={2}
+                renderItem={_renderItem}
+                keyExtractor={(item) => item.label}
+                columnWrapperStyle={{
+                  justifyContent: "space-between",
+                  flex: 1,
+                  gap: 6, // Add spacing between columns
+                  marginBottom: 8, // Add spacing between rows
+                }}
+                contentContainerStyle={{
+                  paddingVertical: 8,
+                  gap: 0,
+                }}
+                scrollEnabled={false} // Prevent FlatList from scrolling inside ScrollView
+              />
 
-              <View className="flex-row items-center justify-between mt-5 p-4  border-2 border-accent-primary rounded-md bg-dark-100 w-3/4 self-center">
-                <TouchableOpacity
-                  className="bg-red-600 px-6 py-3 rounded-md"
-                  onPress={handleDecrease}
-                >
-                  <Text className="text-white font-bold text-2xl">-</Text>
-                </TouchableOpacity>
-                <Text className="text-white font-bold text-2xl  ">
-                  {tempAmount.toString()}
+              <View className="flex-col items-center justify-center mt-5 w-full">
+                <Text className="text-text-title w-full text-center font-bold text-2xl mt-2 p-2 border-2 border-accent-primary rounded-md bg-dark-100">
+                  UPDATE AMOUNT
                 </Text>
 
-                <TouchableOpacity
-                  className="bg-green-600 px-6 py-3 rounded-md"
-                  onPress={handleIncrease}
-                >
-                  <Text className="text-white font-bold text-2xl">+</Text>
-                </TouchableOpacity>
-              </View>
-              {/* Conditionally render the Save button */}
-              {tempAmount !== item?.amount && (
-                <View className="text-text-title w-1/2 flex items-center font-bold text-2xl mt-2 p-2 border-2 border-accent-primary rounded-md bg-dark-100">
+                <View className="flex-row items-center justify-between mt-5 p-4  border-2 border-accent-primary rounded-md bg-dark-100 w-3/4 self-center">
                   <TouchableOpacity
-                    className="bg-accent-dark px-6 py-3 rounded-md w-full"
-                    onPress={handleSave}
+                    className="bg-red-600 px-6 py-3 rounded-md"
+                    onPress={handleDecrease}
                   >
-                    <Text className="text-white font-bold text-xl text-center">
-                      SAVE
-                    </Text>
+                    <Text className="text-white font-bold text-2xl">-</Text>
+                  </TouchableOpacity>
+                  <Text className="text-white font-bold text-2xl  ">
+                    {tempAmount.toString()}
+                  </Text>
+
+                  <TouchableOpacity
+                    className="bg-green-600 px-6 py-3 rounded-md"
+                    onPress={handleIncrease}
+                  >
+                    <Text className="text-white font-bold text-2xl">+</Text>
                   </TouchableOpacity>
                 </View>
-              )}
+                {/* Conditionally render the Save button */}
+                {tempAmount !== item?.amount && (
+                  <View className="text-text-title w-1/2 flex items-center font-bold text-2xl mt-2 p-2 border-2 border-accent-primary rounded-md bg-dark-100">
+                    <TouchableOpacity
+                      className="bg-accent-dark px-6 py-3 rounded-md w-full"
+                      onPress={handleSave}
+                    >
+                      <Text className="text-white font-bold text-xl text-center">
+                        SAVE
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+                )}
+              </View>
             </View>
           </View>
-        </View>
+        ) : null}
       </ScrollView>
     </ImageBackground>
   );

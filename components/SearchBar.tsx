@@ -27,7 +27,6 @@ const SearchBar: React.FC<SearchBarCustomProps> = ({
     <View className="mt-6 p-2 border-2 border-accent-primary rounded-md bg-dark-100">
       <Text className="text-text-title text-xl font-bold p-1">{title}:</Text>
 
-      {/* Wrapper for the input and icon */}
       <View
         style={{ width: 288, height: 64 }}
         className="flex-row items-center p-2 border-2 border-accent-primary rounded-md bg-dark-200"
@@ -46,7 +45,7 @@ const SearchBar: React.FC<SearchBarCustomProps> = ({
         />
         {value ? (
           <TouchableOpacity
-            onPress={() => onSearchChange("")} // When pressed, call onSearchChange with an empty string
+            onPress={() => onSearchChange("")}
             className="p-1 ml-3"
           >
             <AntDesign name="close" size={24} color="white" />

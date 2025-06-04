@@ -25,6 +25,7 @@ import { background } from "@/constants/background";
 import { PhotoFile } from "react-native-vision-camera";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { useFocusEffect } from "@react-navigation/native";
+import InfoModal from "@/components/Modal/InfoModal";
 const windowDimensions = Dimensions.get("window");
 
 const getInitialItemState = (): Tables<"Item"> => ({
@@ -41,6 +42,11 @@ const getInitialItemState = (): Tables<"Item"> => ({
 
 const AddItem = () => {
   const [item, setItem] = useState<Tables<"Item">>(getInitialItemState());
+  const [infoModal, setInfoModal] = useState({
+    visible: false,
+    title: "",
+    message: "",
+  });
 
   const [cameraActive, setCameraActive] = useState(false);
   const [capturedImage, setCapturedImage] = useState<PhotoFile | null>(null);
@@ -61,8 +67,13 @@ const AddItem = () => {
       console.log(
         "Validation failed: Name, Amount, and Measurement Amount are required."
       );
+      setInfoModal({
+        visible: true,
+        title: "Missing Information",
+        message:
+          "Please make sure Name, Amount, and Measurement Amount are all filled in.",
+      });
       //TODO: "Not sure if I want to keep the alert on or not, but I will keep it for now"
-      alert("Please fill in all required fields:");
       return;
     }
 
@@ -70,10 +81,18 @@ const AddItem = () => {
       const data = await insertImage(capturedImage as PhotoFile);
       item.image_url = data.publicUrl; // Set the image URL in the item object
       const insertedItem = await insertItem(item as Tables<"Item">);
-      console.log("Inserted item: ", insertedItem);
-    } catch (error) {
+      setInfoModal({
+        visible: true,
+        title: "Success!",
+        message: "The new item has been saved successfully.",
+      });
+    } catch (error: any) {
       console.error("Error inserting item: ", error);
-      alert("Failed to save the item. Please try again.");
+      setInfoModal({
+        visible: true,
+        title: "Save Error",
+        message: `Failed to save the item. Please try again. \n\nError: ${error.message}`,
+      });
     }
   };
   const handlePictureTaken = async (photo: PhotoFile) => {
@@ -223,12 +242,9 @@ const AddItem = () => {
                   inputMode="decimal"
                   value={item.amount ? item.amount.toString() : ""}
                 />
-                <View
-                  style={{ width: 288 }}
-                  className="h-16 mt-4 flex border-2 border-accent-primary"
-                >
+                <View style={{ width: 288 }} className="h-16 mt-4 flex ">
                   <TouchableOpacity
-                    className="bg-dark-200 flex-1 justify-center  rounded-md items-center"
+                    className="bg-dark-200 border-2 border-accent-primary flex-1 justify-center rounded-md items-center"
                     onPress={handleSave}
                   >
                     <Text className="text-white font-bold text-3xl ">SAVE</Text>
@@ -239,6 +255,12 @@ const AddItem = () => {
           </ScrollView>
         </View>
       </ImageBackground>
+      <InfoModal
+        visible={infoModal.visible}
+        title={infoModal.title}
+        message={infoModal.message}
+        onClose={() => setInfoModal({ ...infoModal, visible: false })}
+      />
       <CameraInputCustom
         isActive={cameraActive}
         onPictureTaken={handlePictureTaken}

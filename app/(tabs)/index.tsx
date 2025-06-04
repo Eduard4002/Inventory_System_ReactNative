@@ -7,6 +7,7 @@ import {
   ActivityIndicator,
   ImageBackground,
   Dimensions,
+  TouchableOpacity,
 } from "react-native";
 import ItemCard from "@/components/ItemCard";
 import useFetch from "@/services/usefetch";
@@ -16,10 +17,13 @@ import { enGB, registerTranslation } from "react-native-paper-dates";
 import { useEffect, useMemo, useState } from "react";
 import DropdownInputCustom from "@/components/Inputs/DropdownInputCustom";
 import { background } from "@/constants/background";
-import { BlurView } from "expo-blur";
 import { Constants, Tables } from "@/database.types";
 import supabase from "@/services/supabase";
 import SearchBar from "@/components/SearchBar";
+
+import SortModal from "@/components/Modal/SortModal";
+import FilterModal from "@/components/Modal/FilterModal";
+import { icons } from "@/constants/icons";
 registerTranslation("en", enGB);
 
 const windowDimensions = Dimensions.get("window");
@@ -27,6 +31,8 @@ const windowDimensions = Dimensions.get("window");
 export default function Index() {
   const [items, setItems] = useState<Tables<"Item">[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const [isSortModalVisible, setSortModalVisible] = useState(false);
+  const [isFilterModalVisible, setFilterModalVisible] = useState(false);
 
   // Listen to the changes in the items table so that the items are updated in real-time
   const {
@@ -77,6 +83,7 @@ export default function Index() {
   });
 
   const sortOptions = [
+    { label: "None", value: "none" },
     { label: "Price: Expensive to Cheapest", value: "price_desc" },
     { label: "Price: Cheapest to Expensive", value: "price_asc" },
     { label: "Expiry Date: Nearest First", value: "expiry_asc" },
@@ -85,7 +92,7 @@ export default function Index() {
   const filterOptions = [
     { label: "All Items", value: "all" },
     { label: "Expired Items", value: "expired" },
-    { label: "Room Type", value: "room_type" }, // Add Room Type filter option
+    { label: "Room Type", value: "room_type" },
   ];
 
   const room_type = Constants.public.Enums.room_type.map((value) => ({
@@ -184,7 +191,37 @@ export default function Index() {
               <Text className="text-red-600">Error: {itemsError?.message}</Text>
             ) : null}
             <SearchBar value={searchQuery} onSearchChange={setSearchQuery} />
-            <DropdownInputCustom
+            <View className="flex-row justify-center mt-4 space-x-4">
+              <TouchableOpacity
+                onPress={() => setSortModalVisible(true)}
+                className="flex-1 p-3 border-2 border-accent-primary rounded-md bg-dark-100 items-center"
+                style={{
+                  backgroundColor:
+                    sortBy === "none" ? "#929292ce" : "#616161e8",
+                }}
+              >
+                <Image
+                  source={icons.home}
+                  className="w-7 h-7"
+                  style={{ tintColor: "#FFFFFF" }}
+                />
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => setFilterModalVisible(true)}
+                className="flex-1 p-3 border-2 border-accent-primary rounded-md bg-dark-100 items-center"
+                style={{
+                  backgroundColor:
+                    filterBy === "all" ? "#929292ce" : "#616161e8",
+                }}
+              >
+                <Image
+                  source={icons.logo}
+                  className="w-7 h-7"
+                  style={{ tintColor: "#FFFFFF" }}
+                />
+              </TouchableOpacity>
+            </View>
+            {/* <DropdownInputCustom
               title="Sort By"
               selectedValue={sortBy}
               placeholder="Select Sort Option"
@@ -206,8 +243,8 @@ export default function Index() {
                 placeholder="Select Room Type"
                 onValueChange={(value) => setRoomType(value)}
               />
-            )}
-            <View className="p-2 mt-2 w-2/3 border-2 border-accent-primary rounded-md bg-dark-100">
+            )} */}
+            <View className="p-2 mt-2 w-full border-2 border-accent-primary rounded-md bg-dark-100">
               <Text className="text-text-title text-2xl font-bold">
                 Total Items: {filteredItems.length}
               </Text>
@@ -230,6 +267,34 @@ export default function Index() {
           </View>
         </ScrollView>
       </View>
+      <SortModal
+        visible={isSortModalVisible}
+        onClose={() => setSortModalVisible(false)}
+        currentSort={sortBy}
+        sortOptions={sortOptions}
+        onSortChange={(value) => {
+          setSortBy(value);
+          setSortModalVisible(false);
+        }}
+      />
+      <FilterModal
+        visible={isFilterModalVisible}
+        onClose={() => setFilterModalVisible(false)}
+        currentFilter={filterBy}
+        filterOptions={filterOptions}
+        onFilterChange={(value) => {
+          setFilterBy(value);
+          if (value !== "room_type") {
+            setRoomType(""); // Reset room type when filter is not room_type
+            setFilterModalVisible(false); // Close the modal
+          }
+        }}
+        currentRoom={roomType}
+        onRoomChange={(value) => {
+          setRoomType(value);
+          setFilterModalVisible(false); // Close the modal after selecting room type
+        }}
+      />
     </ImageBackground>
   );
 }
