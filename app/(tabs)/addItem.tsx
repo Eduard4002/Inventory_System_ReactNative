@@ -10,6 +10,7 @@ import {
   ActivityIndicator,
   ImageBackground,
   Dimensions,
+  Platform
 } from "react-native";
 import { DatePickerModal } from "react-native-paper-dates";
 

@@ -24,6 +24,7 @@ import SearchBar from "@/components/SearchBar";
 import SortModal from "@/components/Modal/SortModal";
 import FilterModal from "@/components/Modal/FilterModal";
 import { icons } from "@/constants/icons";
+import InfoModal from "@/components/Modal/InfoModal";
 registerTranslation("en", enGB);
 
 const windowDimensions = Dimensions.get("window");
@@ -33,6 +34,7 @@ export default function Index() {
   const [searchQuery, setSearchQuery] = useState("");
   const [isSortModalVisible, setSortModalVisible] = useState(false);
   const [isFilterModalVisible, setFilterModalVisible] = useState(false);
+  const [isInfoModalVisible, setInfoModalVisible] = useState(true);
 
   // Listen to the changes in the items table so that the items are updated in real-time
   const {
@@ -187,11 +189,9 @@ export default function Index() {
                 color="#0000ff"
                 className="mt-10 self-center"
               />
-            ) : itemsError ? (
-              <Text className="text-red-600">Error: {itemsError?.message}</Text>
             ) : null}
             <SearchBar value={searchQuery} onSearchChange={setSearchQuery} />
-            <View className="flex-row justify-center mt-4 space-x-4">
+            <View className="flex-row justify-center mt-2 space-x-4">
               <TouchableOpacity
                 onPress={() => setSortModalVisible(true)}
                 className="flex-1 p-3 border-2 border-accent-primary rounded-md bg-dark-100 items-center"
@@ -221,29 +221,6 @@ export default function Index() {
                 />
               </TouchableOpacity>
             </View>
-            {/* <DropdownInputCustom
-              title="Sort By"
-              selectedValue={sortBy}
-              placeholder="Select Sort Option"
-              data={sortOptions}
-              onValueChange={(value) => setSortBy(value)}
-            />
-            <DropdownInputCustom
-              title="Filter By"
-              selectedValue={filterBy}
-              placeholder="Select Filter Option"
-              data={filterOptions}
-              onValueChange={(value) => setFilterBy(value)}
-            />
-            {filterBy === "room_type" && (
-              <DropdownInputCustom
-                title="Select Room Type"
-                data={room_type || []}
-                selectedValue={roomType}
-                placeholder="Select Room Type"
-                onValueChange={(value) => setRoomType(value)}
-              />
-            )} */}
             <View className="p-2 mt-2 w-full border-2 border-accent-primary rounded-md bg-dark-100">
               <Text className="text-text-title text-2xl font-bold">
                 Total Items: {filteredItems.length}
@@ -265,6 +242,24 @@ export default function Index() {
               scrollEnabled={false}
             />
           </View>
+          {itemsError ? (
+            <>
+              <TouchableOpacity
+                onPress={() => setInfoModalVisible(true)}
+                className="p-3 border-2 border-accent-primary rounded-md bg-red-500 items-center"
+              >
+                <Text className="text-white text-xl">Show Error</Text>
+              </TouchableOpacity>
+              <InfoModal
+                visible={isInfoModalVisible}
+                title={"Error"}
+                message={itemsError.message}
+                onClose={() => setInfoModalVisible(false)}
+              />
+            </>
+          ) : (
+            <></>
+          )}
         </ScrollView>
       </View>
       <SortModal

@@ -4,8 +4,9 @@ import {
   StyleSheet,
   TouchableOpacity,
   View,
-  Text, // <-- Import Text component
-  SafeAreaView, // <-- Import for better positioning
+  Text,
+  SafeAreaView,
+  Platform,
 } from "react-native";
 import React, { useCallback, useRef } from "react";
 import {
@@ -28,11 +29,16 @@ const CameraInputCustom: React.FC<CameraOverlayProps> = ({
   onClose,
   navbarHeight = 56,
 }) => {
-  const camera = useRef<Camera>(null);
-  const device = useCameraDevice("back");
+  let camera = null;
+  let device = null;
+  if (Platform.OS !== "web") {
+    console.log(Platform.OS);
+    device = useCameraDevice("back");
+    camera = useRef<Camera>(null);
+  }
 
   const captureImage = useCallback(async () => {
-    if (camera.current == null) return;
+    if (camera?.current == null) return;
     try {
       const photo = await camera.current.takeSnapshot({ quality: 100 });
       onPictureTaken(photo);
@@ -50,16 +56,17 @@ const CameraInputCustom: React.FC<CameraOverlayProps> = ({
   }
 
   return (
-    // Use SafeAreaView to avoid overlapping with status bars/notches
     <SafeAreaView style={[styles.cameraContainer, { bottom: navbarHeight }]}>
-      <Camera
-        ref={camera}
-        style={StyleSheet.absoluteFill}
-        photo={true}
-        device={device}
-        isActive={true}
-        photoQualityBalance="speed"
-      />
+      {Platform.OS !== "web" && (
+        <Camera
+          ref={camera}
+          style={StyleSheet.absoluteFill}
+          photo={true}
+          device={device}
+          isActive={true}
+          photoQualityBalance="speed"
+        />
+      )}
 
       {/* --- Back Button --- */}
       {/* This is the new addition */}
