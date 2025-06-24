@@ -10,7 +10,7 @@ import {
   ActivityIndicator,
   ImageBackground,
   Dimensions,
-  Platform
+  Platform,
 } from "react-native";
 import { DatePickerModal } from "react-native-paper-dates";
 
@@ -31,8 +31,8 @@ const windowDimensions = Dimensions.get("window");
 
 const getInitialItemState = (): Tables<"Item"> => ({
   amount: 1,
-  created_at: new Date().toLocaleDateString(),
-  expiry_date: new Date().toLocaleDateString(),
+  created_at: new Date().toISOString(),
+  expiry_date: new Date().toISOString(),
   measurement_amount: null,
   measurement_type: null,
   name: "",
@@ -103,18 +103,13 @@ const AddItem = () => {
   };
   useFocusEffect(
     useCallback(() => {
-      // This function will run every time the screen comes into focus
-
-      console.log("AddItem screen focused. Resetting all form state.");
-
       setItem(getInitialItemState()); // Reset the form data
       setCapturedImage(null); // Reset the captured image
 
-      // You can return a cleanup function that runs when the screen goes out of focus
       return () => {
         console.log("AddItem screen unfocused.");
       };
-    }, []) // The empty dependency array [] is important!
+    }, [])
   );
 
   return (
@@ -136,7 +131,7 @@ const AddItem = () => {
             contentContainerStyle={{ paddingBottom: 100 }}
           >
             <View className="w-full md:w-3/4 lg:w-1/2 xl:w-1/3 self-center items-center">
-              <View className="flex-row  p-2 mx-2  border-4 border-accent-primary rounded-md bg-dark-100 self-stretch items-center justify-center">
+              <View className="flex-row  p-2 mx-2  border-2 border-accent-primary rounded-md bg-dark-100 self-stretch items-center justify-center">
                 <Text className="text-white text-4xl font-bold">Add Item</Text>
               </View>
 
@@ -221,7 +216,7 @@ const AddItem = () => {
 
                 <DateInputCustom
                   onDateChange={(date) => {
-                    const dateString = date.toLocaleDateString();
+                    const dateString = date.toISOString();
                     console.log(
                       "Parent: Setting expiry_date to string:",
                       dateString

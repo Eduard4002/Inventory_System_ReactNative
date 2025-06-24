@@ -200,7 +200,6 @@ const ItemDetails = () => {
                     <Text className="text-white font-bold text-2xl">+</Text>
                   </TouchableOpacity>
                 </View>
-                {/* Conditionally render the Save button */}
                 {tempAmount !== item?.amount && (
                   <View className="text-text-title w-1/2 flex items-center font-bold text-2xl mt-2 p-2 border-2 border-accent-primary rounded-md bg-dark-100">
                     <TouchableOpacity

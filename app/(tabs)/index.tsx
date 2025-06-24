@@ -14,7 +14,7 @@ import useFetch from "@/services/usefetch";
 import { fetchItems } from "@/services/api";
 
 import { enGB, registerTranslation } from "react-native-paper-dates";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import DropdownInputCustom from "@/components/Inputs/DropdownInputCustom";
 import { background } from "@/constants/background";
 import { Constants, Tables } from "@/database.types";
@@ -25,6 +25,20 @@ import SortModal from "@/components/Modal/SortModal";
 import FilterModal from "@/components/Modal/FilterModal";
 import { icons } from "@/constants/icons";
 import InfoModal from "@/components/Modal/InfoModal";
+import {
+  useRoute,
+  RouteProp,
+  useFocusEffect,
+  useNavigation,
+} from "@react-navigation/native";
+import { RootStackParamList } from "@/types/navigation";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+
+type IndexScreenRouteProp = RouteProp<RootStackParamList, "index">;
+type InfoScreenNavigationProp = NativeStackNavigationProp<
+  RootStackParamList,
+  "index"
+>;
 registerTranslation("en", enGB);
 
 const windowDimensions = Dimensions.get("window");
@@ -35,6 +49,9 @@ export default function Index() {
   const [isSortModalVisible, setSortModalVisible] = useState(false);
   const [isFilterModalVisible, setFilterModalVisible] = useState(false);
   const [isInfoModalVisible, setInfoModalVisible] = useState(true);
+  const navigation = useNavigation<InfoScreenNavigationProp>();
+
+  const route = useRoute<IndexScreenRouteProp>();
 
   // Listen to the changes in the items table so that the items are updated in real-time
   const {
@@ -94,6 +111,7 @@ export default function Index() {
   const filterOptions = [
     { label: "All Items", value: "all" },
     { label: "Expired Items", value: "expired" },
+    { label: "Expiring Soon", value: "expiring_soon" },
     { label: "Room Type", value: "room_type" },
   ];
 
@@ -101,6 +119,20 @@ export default function Index() {
     label: value,
     value: value,
   }));
+  useFocusEffect(
+    useCallback(() => {
+      // Check if the special 'initialFilter' parameter was passed
+      if (route.params?.initialFilter) {
+        console.log("Found initialFilter param:", route.params.initialFilter);
+        // Set the filter state to the value from the parameter
+        setFilterBy(route.params.initialFilter);
+
+        // IMPORTANT: Clear the parameter so it doesn't get re-applied
+        // on the next focus event if the user changes the filter manually.
+        navigation.setParams({ initialFilter: undefined });
+      }
+    }, [route.params?.initialFilter]) // This effect re-runs if the parameter changes
+  );
 
   const filteredItems = useMemo(() => {
     if (!Array.isArray(items)) return [];
@@ -113,6 +145,18 @@ export default function Index() {
           ? new Date(item.expiry_date)
           : new Date(0);
         return expiryDate.getTime() < currentDate.getTime(); // Compare dates
+      });
+    }
+    if (filterBy === "expiring_soon") {
+      const currentDate = new Date(Date.now());
+      const sevenDaysFromNow = new Date();
+      // TODO: For now I have defined "soon" to be 7 days, but this can be changed to a user setting
+      sevenDaysFromNow.setDate(currentDate.getDate() + 7);
+      result = result.filter((item) => {
+        if (!item.expiry_date) return false;
+        const expiryDate = new Date(item.expiry_date);
+        // Check if the date is in the future but before our 7-day limit
+        return expiryDate > currentDate && expiryDate < sevenDaysFromNow;
       });
     }
     // Filter by room type

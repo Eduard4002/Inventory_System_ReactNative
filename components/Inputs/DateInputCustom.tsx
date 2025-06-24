@@ -52,7 +52,6 @@ const DateInputCustom: React.FC<DateInputCustomProps> = ({
   // Use the custom parser
   const currentDate = parseValueToDate(value);
 
-  // The 'open' state is fine to keep, as it's purely for UI presentation
   const [open, setOpen] = useState(false);
 
   const onDismissSingle = useCallback(() => {
@@ -79,7 +78,7 @@ const DateInputCustom: React.FC<DateInputCustomProps> = ({
         <TextInput
           className="text-white font-bold text-xl w-2/3"
           // The displayed value is now based on the prop from the parent
-          value={currentDate.toLocaleDateString()}
+          value={currentDate.toISOString()}
           editable={false}
         />
         <TouchableOpacity

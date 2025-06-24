@@ -32,7 +32,6 @@ const CameraInputCustom: React.FC<CameraOverlayProps> = ({
   let camera = null;
   let device = null;
   if (Platform.OS !== "web") {
-    console.log(Platform.OS);
     device = useCameraDevice("back");
     camera = useRef<Camera>(null);
   }

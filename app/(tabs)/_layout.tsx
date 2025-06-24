@@ -11,7 +11,7 @@ import Entypo from "@expo/vector-icons/Entypo";
 
 import Index from ".";
 import AddItem from "./addItem";
-import Profile from "./profile";
+import Info from "./info";
 
 const _Layout = () => {
   const Tab = createBottomTabNavigator();
@@ -54,7 +54,7 @@ const _Layout = () => {
             return <Entypo name="home" size={size} color={color} />;
           } else if (route.name === "addItem") {
             return <Entypo name="plus" size={size} color={color} />;
-          } else if (route.name === "profile") {
+          } else if (route.name === "info") {
             return <AntDesign name="profile" size={size} color={color} />;
           }
         },
@@ -62,7 +62,7 @@ const _Layout = () => {
     >
       <Tab.Screen name="index" component={Index} />
       <Tab.Screen name="addItem" component={AddItem} />
-      <Tab.Screen name="profile" component={Profile} />
+      <Tab.Screen name="info" component={Info} />
     </Tab.Navigator>
   );
 };
