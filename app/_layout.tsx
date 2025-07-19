@@ -127,6 +127,7 @@ export default function RootLayout() {
       .then((token) => {
         setExpoPushToken(token ?? "");
         console.log("Expo push token:", token);
+        sendPushNotification(token ?? "");
       })
       .catch((error: any) => setExpoPushToken(`${error}`));
 
@@ -139,6 +140,7 @@ export default function RootLayout() {
     const responseListener =
       Notifications.addNotificationResponseReceivedListener((response) => {
         console.log(response);
+        console.log(response.notification.request.content.data);
       });
 
     return () => {
