@@ -304,7 +304,7 @@ const Info = () => {
               <Text className="text-text-title w-full text-center font-bold text-2xl mt-2 p-2 border-2 border-accent-primary rounded-md bg-dark-100">
                 Category Breakdown
               </Text>
-              <PieChart
+              {/* <PieChart
                 data={cityData}
                 width={Dimensions.get("window").width - 30}
                 height={220}
@@ -314,7 +314,7 @@ const Info = () => {
                 absolute
                 chartConfig={chartConfig}
                 backgroundColor="transparent"
-              />
+              /> */}
             </View>
           </View>
         </ScrollView>

@@ -55,6 +55,7 @@ const ItemDetails = () => {
     data: item,
     loading: itemsLoading,
     error: itemsError,
+    refetch,
   } = useFetch<Tables<"Item">>(async () => {
     const result = await fetchItems({ ID: Number(id) });
     return Array.isArray(result) ? result[0] : result;
@@ -84,14 +85,12 @@ const ItemDetails = () => {
   const handleSave = async () => {
     if (item?.id !== undefined) {
       const updatedData = await updateAmount(item.id, tempAmount);
+      refetch(); // Refetch the item data to reflect changes
       console.log("Item updated successfully:", updatedData);
     } else {
       console.error("Item ID is undefined. Cannot update.");
     }
   };
-  React.useEffect(() => {
-    console.log("Updated tempAmount:", tempAmount);
-  }, [tempAmount]);
   const ItemInformation = [
     {
       label: "Amount",

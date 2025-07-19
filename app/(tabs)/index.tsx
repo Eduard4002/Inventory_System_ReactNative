@@ -64,7 +64,7 @@ export default function Index() {
     })
   );
   useEffect(() => {
-    const channel = supabase
+    const insertChannel = supabase
       .channel("schema-db-changes")
       .on(
         "postgres_changes",
@@ -83,8 +83,31 @@ export default function Index() {
         }
       )
       .subscribe();
+    const updateChannel = supabase
+      .channel("schema-db-changes")
+      .on(
+        "postgres_changes",
+        {
+          event: "UPDATE",
+          schema: "public",
+          table: "Item",
+        },
+        (payload) => {
+          console.log("Update received!", payload);
+          // Update the item in the state
+          setItems((currentItems) =>
+            currentItems.map((item) =>
+              item.id === (payload.new as Tables<"Item">).id
+                ? (payload.new as Tables<"Item">)
+                : item
+            )
+          );
+        }
+      )
+      .subscribe();
     return () => {
-      channel.unsubscribe();
+      insertChannel.unsubscribe();
+      updateChannel.unsubscribe();
     };
   }, []);
   const [sortBy, setSortBy] = useState("price_desc");

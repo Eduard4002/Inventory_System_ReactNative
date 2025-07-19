@@ -1,32 +1,42 @@
 import {
-  StyleSheet,
   Text,
-  TextInput,
   View,
-  Button,
   TouchableOpacity,
   Image,
   ScrollView,
-  ActivityIndicator,
   ImageBackground,
   Dimensions,
   Platform,
 } from "react-native";
-import { DatePickerModal } from "react-native-paper-dates";
 
-import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { icons } from "@/constants/icons";
+import React, { useCallback, useEffect, useState } from "react";
 import TextInputCustom from "@/components/Inputs/TextInputCustom";
 import DateInputCustom from "@/components/Inputs/DateInputCustom";
 import DropdownInputCustom from "@/components/Inputs/DropdownInputCustom";
-import CameraInputCustom from "@/components/Inputs/CameraInputCustom";
+
 import { insertImage, insertItem } from "@/services/api";
 import { Tables, Enums, Constants } from "@/database.types";
 import { background } from "@/constants/background";
-import { PhotoFile } from "react-native-vision-camera";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { useFocusEffect } from "@react-navigation/native";
 import InfoModal from "@/components/Modal/InfoModal";
+
+// Conditional imports for non-web platforms
+let CameraInputCustom: any = null;
+
+// Type definition for PhotoFile (matching react-native-vision-camera)
+type PhotoFile = {
+  path: string;
+  width: number;
+  height: number;
+  isRawPhoto?: boolean;
+  orientation?: string;
+  isMirrored?: boolean;
+};
+
+if (Platform.OS !== "web") {
+  CameraInputCustom = require("@/components/Inputs/CameraInputCustom").default;
+}
 const windowDimensions = Dimensions.get("window");
 
 const getInitialItemState = (): Tables<"Item"> => ({
@@ -81,7 +91,7 @@ const AddItem = () => {
     try {
       const data = await insertImage(capturedImage as PhotoFile);
       item.image_url = data.publicUrl; // Set the image URL in the item object
-      const insertedItem = await insertItem(item as Tables<"Item">);
+      await insertItem(item as Tables<"Item">);
       setInfoModal({
         visible: true,
         title: "Success!",
@@ -136,25 +146,27 @@ const AddItem = () => {
               </View>
 
               <>
-                <TouchableOpacity
-                  className="bg-dark-100 p-2 rounded-lg items-center justify-center border-2  border-accent-primary  w-full mt-6"
-                  onPress={() => setCameraActive(true)}
-                  style={{ height: dimensions.window.height * 0.4 }}
-                >
-                  {capturedImage ? (
-                    <Image
-                      source={{ uri: "file://" + capturedImage.path }}
-                      style={{
-                        width: "100%",
-                        height: "100%",
-                      }}
-                      resizeMode="cover"
-                      className="rounded-lg"
-                    />
-                  ) : (
-                    <AntDesign name="camera" size={96} color="white" />
-                  )}
-                </TouchableOpacity>
+                {Platform.OS !== "web" && (
+                  <TouchableOpacity
+                    className="bg-dark-100 p-2 rounded-lg items-center justify-center border-2  border-accent-primary  w-full mt-6"
+                    onPress={() => setCameraActive(true)}
+                    style={{ height: dimensions.window.height * 0.4 }}
+                  >
+                    {capturedImage ? (
+                      <Image
+                        source={{ uri: "file://" + capturedImage.path }}
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                        }}
+                        resizeMode="cover"
+                        className="rounded-lg"
+                      />
+                    ) : (
+                      <AntDesign name="camera" size={96} color="white" />
+                    )}
+                  </TouchableOpacity>
+                )}
                 <TextInputCustom
                   onChangeText={(text) => setItem({ ...item, name: text })}
                   placeholder="Brasno"
@@ -257,16 +269,16 @@ const AddItem = () => {
         message={infoModal.message}
         onClose={() => setInfoModal({ ...infoModal, visible: false })}
       />
-      <CameraInputCustom
-        isActive={cameraActive}
-        onPictureTaken={handlePictureTaken}
-        onClose={() => setCameraActive(false)}
-        navbarHeight={56} // Pass your navbar height here
-      />
+      {Platform.OS !== "web" && (
+        <CameraInputCustom
+          isActive={cameraActive}
+          onPictureTaken={handlePictureTaken}
+          onClose={() => setCameraActive(false)}
+          navbarHeight={56} // Pass your navbar height here
+        />
+      )}
     </>
   );
 };
 
 export default AddItem;
-
-const styles = StyleSheet.create({});

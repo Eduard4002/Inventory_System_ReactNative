@@ -1,7 +1,15 @@
 import { Tables } from "@/database.types";
 import supabase from "./supabase";
-import { PhotoFile } from "react-native-vision-camera";
 
+// Type definition for PhotoFile (to avoid importing on web)
+type PhotoFileType = {
+  path: string;
+  width: number;
+  height: number;
+  isRawPhoto?: boolean;
+  orientation?: string;
+  isMirrored?: boolean;
+};
 
 // This function fetches items from the database. If ID is -1, it fetches all items. Otherwise, it fetches the item with the given ID.
 export const fetchItems = async ({ ID }: { ID: number }) => {
@@ -30,6 +38,7 @@ export const fetchItems = async ({ ID }: { ID: number }) => {
 };
 
 export const insertItem = async (item: Tables<"Item">) => {
+  console.log("Inserting item:", item);
   const { data, error } = await supabase.from("Item").insert([item]).select();
   if (error) {
     console.error("Error inserting a item:", error.message);
@@ -38,22 +47,21 @@ export const insertItem = async (item: Tables<"Item">) => {
 
   return data;
 };
-export const insertImage = async (image : PhotoFile) => {
+export const insertImage = async (image: PhotoFileType) => {
   const filename = image.path.split("/").pop();
   console.log("Uploading image with filename:", filename);
 
   const formData = new FormData();
   const photoDetails = {
     uri: `file://${image.path}`,
-    type: 'image/jpeg', // The mime type of the file
+    type: "image/jpeg", // The mime type of the file
     name: `photo-${filename}`, // The name of the file
   };
-  formData.append('file', photoDetails as any);
+  formData.append("file", photoDetails as any);
 
-  const { data : imageData, error } = await supabase.storage
+  const { data: imageData, error } = await supabase.storage
     .from("item-image")
     .upload(`public/${filename}`, formData);
-    
 
   if (error) {
     console.error("Error uploading image:", error.message);
@@ -61,10 +69,10 @@ export const insertImage = async (image : PhotoFile) => {
   }
   console.log("Image uploaded successfully:", imageData);
   const { data } = supabase.storage
-      .from('item-image')
-      .getPublicUrl(imageData.path);
+    .from("item-image")
+    .getPublicUrl(imageData.path);
   return data;
-}
+};
 //Updates the amount of an item in the database
 export const updateAmount = async (ID: number, amount: number) => {
   const { data, error } = await supabase

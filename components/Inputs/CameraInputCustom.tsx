@@ -9,12 +9,32 @@ import {
   Platform,
 } from "react-native";
 import React, { useCallback, useRef } from "react";
-import {
-  Camera,
-  CameraCaptureError,
-  PhotoFile,
-  useCameraDevice,
-} from "react-native-vision-camera";
+
+// Type definitions for non-web platforms
+type PhotoFile = {
+  path: string;
+  width: number;
+  height: number;
+  isRawPhoto?: boolean;
+  orientation?: string;
+  isMirrored?: boolean;
+};
+
+type CameraRef = {
+  takeSnapshot: (options: { quality: number }) => Promise<PhotoFile>;
+};
+
+// Conditional imports for non-web platforms
+let Camera: any = null;
+let CameraCaptureError: any = null;
+let useCameraDevice: any = null;
+
+if (Platform.OS !== "web") {
+  const VisionCamera = require("react-native-vision-camera");
+  Camera = VisionCamera.Camera;
+  CameraCaptureError = VisionCamera.CameraCaptureError;
+  useCameraDevice = VisionCamera.useCameraDevice;
+}
 
 interface CameraOverlayProps {
   isActive: boolean;
@@ -33,7 +53,7 @@ const CameraInputCustom: React.FC<CameraOverlayProps> = ({
   let device = null;
   if (Platform.OS !== "web") {
     device = useCameraDevice("back");
-    camera = useRef<Camera>(null);
+    camera = useRef<CameraRef>(null);
   }
 
   const captureImage = useCallback(async () => {
@@ -41,7 +61,7 @@ const CameraInputCustom: React.FC<CameraOverlayProps> = ({
     try {
       const photo = await camera.current.takeSnapshot({ quality: 100 });
       onPictureTaken(photo);
-    } catch (e) {
+    } catch (e: any) {
       console.error("Failed to take photo:", e);
       if (e instanceof CameraCaptureError) {
         console.error("Capture Error code:", e.code);
