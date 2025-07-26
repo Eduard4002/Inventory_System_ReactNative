@@ -64,7 +64,42 @@ export default function Index() {
     })
   );
   useEffect(() => {
-    const insertChannel = supabase
+    const readAllChannel = supabase
+      .channel("schema-db-changes")
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "Item",
+        },
+        (payload) => {
+          console.log("Change received!", payload);
+          // Add the new item to the beginning of our existing list in the state
+          if (payload.eventType === "INSERT") {
+            setItems((currentItems) => [
+              payload.new as Tables<"Item">,
+              ...currentItems,
+            ]);
+          } else if (payload.eventType === "DELETE") {
+            setItems((currentItems) =>
+              currentItems.filter(
+                (item) => item.id !== (payload.old as Tables<"Item">).id
+              )
+            );
+          } else if (payload.eventType === "UPDATE") {
+            setItems((currentItems) =>
+              currentItems.map((item) =>
+                item.id === (payload.new as Tables<"Item">).id
+                  ? (payload.new as Tables<"Item">)
+                  : item
+              )
+            );
+          }
+        }
+      )
+      .subscribe();
+    /* const insertChannel = supabase
       .channel("schema-db-changes")
       .on(
         "postgres_changes",
@@ -104,10 +139,11 @@ export default function Index() {
           );
         }
       )
-      .subscribe();
+      .subscribe();*/
     return () => {
-      insertChannel.unsubscribe();
-      updateChannel.unsubscribe();
+      //insertChannel.unsubscribe();
+      //updateChannel.unsubscribe();
+      readAllChannel.unsubscribe();
     };
   }, []);
   const [sortBy, setSortBy] = useState("price_desc");

@@ -85,6 +85,11 @@ const ItemDetails = () => {
   const handleSave = async () => {
     if (item?.id !== undefined) {
       const updatedData = await updateAmount(item.id, tempAmount);
+      if (tempAmount <= 0) {
+        //go back to the index page since the item was deleted
+        router.back();
+        return;
+      }
       refetch(); // Refetch the item data to reflect changes
       console.log("Item updated successfully:", updatedData);
     } else {
