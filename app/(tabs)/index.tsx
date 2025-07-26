@@ -33,6 +33,7 @@ import {
 } from "@react-navigation/native";
 import { RootStackParamList } from "@/types/navigation";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import AntDesign from "@expo/vector-icons/AntDesign";
 
 type IndexScreenRouteProp = RouteProp<RootStackParamList, "index">;
 type InfoScreenNavigationProp = NativeStackNavigationProp<
@@ -303,10 +304,11 @@ export default function Index() {
                     sortBy === "none" ? "#929292ce" : "#616161e8",
                 }}
               >
-                <Image
-                  source={icons.home}
+                <AntDesign
+                  name="downcircleo"
+                  size={24}
+                  color="#FFFFFF"
                   className="w-7 h-7"
-                  style={{ tintColor: "#FFFFFF" }}
                 />
               </TouchableOpacity>
               <TouchableOpacity
@@ -317,10 +319,11 @@ export default function Index() {
                     filterBy === "all" ? "#929292ce" : "#616161e8",
                 }}
               >
-                <Image
-                  source={icons.logo}
+                <AntDesign
+                  name="filter"
+                  size={24}
+                  color="#FFFFFF"
                   className="w-7 h-7"
-                  style={{ tintColor: "#FFFFFF" }}
                 />
               </TouchableOpacity>
             </View>
