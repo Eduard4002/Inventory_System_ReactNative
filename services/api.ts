@@ -89,3 +89,16 @@ export const updateAmount = async (ID: number, amount: number) => {
 
   return data;
 };
+
+async function getExpiringItems() {
+  const nextWeek = new Date();
+  nextWeek.setDate(nextWeek.getDate() + 7);
+
+  const { data, error } = await supabase
+    .from("Item")
+    .select("*")
+    .lte("expiry_date", nextWeek.toISOString());
+
+  if (error) throw error;
+  return data;
+}

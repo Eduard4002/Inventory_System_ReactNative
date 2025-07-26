@@ -14,6 +14,24 @@ export type Database = {
   };
   public: {
     Tables: {
+      Device_Token: {
+        Row: {
+          created_at: string | null;
+          id: string;
+          token: string;
+        };
+        Insert: {
+          created_at?: string | null;
+          id?: string;
+          token: string;
+        };
+        Update: {
+          created_at?: string | null;
+          id?: string;
+          token?: string;
+        };
+        Relationships: [];
+      };
       Item: {
         Row: {
           amount: number | null;
