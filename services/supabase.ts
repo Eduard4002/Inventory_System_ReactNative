@@ -28,11 +28,20 @@ export const signInWithEmail = async () => {
   if(error) console.log('Sign in error:', error);
   return data;
 }
-  signInWithEmail().then((result) => {
-    console.log('Sign-in successful:', result);
-    supabase.realtime.setAuth(result.session?.access_token || "");
-  }).catch((error) => {
-    console.error('Error during sign-in:', error);
-  });
+// We first check if there is an existing session, which means the user is already signed in, if not we sign in with email and password
+supabase.auth.getSession().then(({ data: { session } }) => {
+  if (session) {
+    console.log('Session found:', session);
+    supabase.realtime.setAuth(session.access_token);
+  } else {
+    console.log('No session found, signing in...');
+    signInWithEmail().then((result) => {
+      console.log('Sign-in successful:', result);
+      supabase.realtime.setAuth(result.session?.access_token || "");
+    }).catch((error) => {
+        console.error('Error during sign-in:', error);
+    });
+  }
+});
 
 export default supabase;
