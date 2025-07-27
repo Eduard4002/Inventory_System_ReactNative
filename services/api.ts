@@ -75,6 +75,14 @@ export const insertImage = async (image: PhotoFileType) => {
 };
 //Updates the amount of an item in the database
 export const updateAmount = async (ID: number, amount: number) => {
+  // if amount is 0, we delete the item and the image associated with it
+  if(amount <= 0){
+    console.log("Amount is less than or equal to 0, deleting item and image.");
+    deleteItem(ID);
+    return;
+  }
+  
+
   const { data, error } = await supabase
     .from("Item")
     .update({ amount })
@@ -89,16 +97,39 @@ export const updateAmount = async (ID: number, amount: number) => {
 
   return data;
 };
-
-async function getExpiringItems() {
-  const nextWeek = new Date();
-  nextWeek.setDate(nextWeek.getDate() + 7);
-
+export const deleteItem = async (ID: number) => {
+  //first we get the item image_url
   const { data, error } = await supabase
     .from("Item")
-    .select("*")
-    .lte("expiry_date", nextWeek.toISOString());
+    .select("image_url")
+    .eq("id", ID)
+    .single();
+  // If there is an error fetching the item, throw an error
+  if (error) {
+    console.error("Error fetching item for deletion:", error.message);
+    throw new Error(error.message);
+  }
+  // If the item was found, we proceed to delete it
+  const imageUrl = data?.image_url;
+  const { error: deleteError } = await supabase
+    .from("Item")
+    .delete()
+    .eq("id", ID);
 
-  if (error) throw error;
-  return data;
+  if (deleteError) {
+    console.error("Error deleting item:", deleteError.message);
+    throw new Error(deleteError.message);
+  }
+
+  // If the item had an image, we delete it from storage
+  if (imageUrl) {
+    const { error: storageError } = await supabase.storage
+      .from("item-image")
+      .remove([`public/${imageUrl.split("/").pop()}`]);
+
+    if (storageError) {
+      console.error("Error deleting item image:", storageError.message);
+      throw new Error(storageError.message);
+    }
+  }
 }

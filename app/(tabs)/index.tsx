@@ -33,6 +33,7 @@ import {
 } from "@react-navigation/native";
 import { RootStackParamList } from "@/types/navigation";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import AntDesign from "@expo/vector-icons/AntDesign";
 
 type IndexScreenRouteProp = RouteProp<RootStackParamList, "index">;
 type InfoScreenNavigationProp = NativeStackNavigationProp<
@@ -64,7 +65,42 @@ export default function Index() {
     })
   );
   useEffect(() => {
-    const insertChannel = supabase
+    const readAllChannel = supabase
+      .channel("schema-db-changes")
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "Item",
+        },
+        (payload) => {
+          console.log("Change received!", payload);
+          // Add the new item to the beginning of our existing list in the state
+          if (payload.eventType === "INSERT") {
+            setItems((currentItems) => [
+              payload.new as Tables<"Item">,
+              ...currentItems,
+            ]);
+          } else if (payload.eventType === "DELETE") {
+            setItems((currentItems) =>
+              currentItems.filter(
+                (item) => item.id !== (payload.old as Tables<"Item">).id
+              )
+            );
+          } else if (payload.eventType === "UPDATE") {
+            setItems((currentItems) =>
+              currentItems.map((item) =>
+                item.id === (payload.new as Tables<"Item">).id
+                  ? (payload.new as Tables<"Item">)
+                  : item
+              )
+            );
+          }
+        }
+      )
+      .subscribe();
+    /* const insertChannel = supabase
       .channel("schema-db-changes")
       .on(
         "postgres_changes",
@@ -104,10 +140,11 @@ export default function Index() {
           );
         }
       )
-      .subscribe();
+      .subscribe();*/
     return () => {
-      insertChannel.unsubscribe();
-      updateChannel.unsubscribe();
+      //insertChannel.unsubscribe();
+      //updateChannel.unsubscribe();
+      readAllChannel.unsubscribe();
     };
   }, []);
   const [sortBy, setSortBy] = useState("price_desc");
@@ -267,10 +304,11 @@ export default function Index() {
                     sortBy === "none" ? "#929292ce" : "#616161e8",
                 }}
               >
-                <Image
-                  source={icons.home}
+                <AntDesign
+                  name="downcircleo"
+                  size={24}
+                  color="#FFFFFF"
                   className="w-7 h-7"
-                  style={{ tintColor: "#FFFFFF" }}
                 />
               </TouchableOpacity>
               <TouchableOpacity
@@ -281,10 +319,11 @@ export default function Index() {
                     filterBy === "all" ? "#929292ce" : "#616161e8",
                 }}
               >
-                <Image
-                  source={icons.logo}
+                <AntDesign
+                  name="filter"
+                  size={24}
+                  color="#FFFFFF"
                   className="w-7 h-7"
-                  style={{ tintColor: "#FFFFFF" }}
                 />
               </TouchableOpacity>
             </View>
