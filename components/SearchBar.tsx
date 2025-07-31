@@ -31,10 +31,11 @@ const SearchBar: React.FC<SearchBarCustomProps> = ({
         style={{ width: 288, height: 64 }}
         className="flex-row items-center p-2 border-2 border-accent-primary rounded-md bg-dark-200"
       >
-        <Image
-          source={icons.search}
-          className="w-6 h-6 mr-3"
-          style={{ tintColor: "#ffffff" }}
+        <AntDesign
+          name="search1"
+          size={24}
+          color="#FFFFFF"
+          className="w-7 h-7 "
         />
         <TextInput
           className="text-text-title font-bold text-xl flex-1 h-full"

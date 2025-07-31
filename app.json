@@ -1,10 +1,10 @@
 {
   "expo": {
-    "name": "Inventory_System",
+    "name": "Cabinett",
     "slug": "Inventory_System",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/logo.png",
+    "icon": "./assets/images/logo-test.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
@@ -17,8 +17,7 @@
     "android": {
       "softwareKeyboardLayoutMode": "pan",
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/logo.png",
-        "backgroundColor": "#ffffff"
+        "foregroundImage": "./assets/images/logo-test.png"
       },
       "package": "com.anonymous.Inventory_System",
       "googleServicesFile": "google-services.json"
@@ -33,7 +32,7 @@
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/logo.png",
+          "image": "./assets/images/logo-test.png",
           "imageWidth": 200,
           "resizeMode": "contain",
           "backgroundColor": "#ffffff"
