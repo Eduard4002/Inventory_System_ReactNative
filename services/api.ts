@@ -76,12 +76,11 @@ export const insertImage = async (image: PhotoFileType) => {
 //Updates the amount of an item in the database
 export const updateAmount = async (ID: number, amount: number) => {
   // if amount is 0, we delete the item and the image associated with it
-  if(amount <= 0){
+  if (amount <= 0) {
     console.log("Amount is less than or equal to 0, deleting item and image.");
     deleteItem(ID);
     return;
   }
-  
 
   const { data, error } = await supabase
     .from("Item")
@@ -97,6 +96,22 @@ export const updateAmount = async (ID: number, amount: number) => {
 
   return data;
 };
+async function getExpiringItems() {
+  const nextWeek = new Date();
+  nextWeek.setDate(nextWeek.getDate() + 7);
+
+  const { data, error } = await supabase
+    .from("Item")
+    .select("*")
+    .lte("expiry_date", nextWeek.toISOString());
+  finalcount: number = 0;
+  data.array.forEach((element) => {
+    finalcount += element.amount;
+  });
+
+  if (error) throw error;
+  return data;
+}
 export const deleteItem = async (ID: number) => {
   //first we get the item image_url
   const { data, error } = await supabase
@@ -132,4 +147,4 @@ export const deleteItem = async (ID: number) => {
       throw new Error(storageError.message);
     }
   }
-}
+};

@@ -12,6 +12,13 @@ import {
 import ItemCard from "@/components/ItemCard";
 import useFetch from "@/services/usefetch";
 import { fetchItems } from "@/services/api";
+import * as Notifications from "expo-notifications";
+import {
+  addNotificationListener,
+  addNotificationResponseListener,
+  requestNotificationPermission,
+} from "@/services/notifications";
+import { useLocalSearchParams } from "expo-router";
 
 import { enGB, registerTranslation } from "react-native-paper-dates";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -45,6 +52,8 @@ registerTranslation("en", enGB);
 const windowDimensions = Dimensions.get("window");
 
 export default function Index() {
+  const { initialFilter } = useLocalSearchParams();
+
   const [items, setItems] = useState<Tables<"Item">[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [isSortModalVisible, setSortModalVisible] = useState(false);
@@ -193,6 +202,30 @@ export default function Index() {
       }
     }, [route.params?.initialFilter]) // This effect re-runs if the parameter changes
   );
+  /* useEffect(() => {
+    // Handle notification tap when app is launched from killed state
+    Notifications.getLastNotificationResponseAsync().then((response) => {
+      if (response) {
+        console.log(
+          "Initial notification response (cold start):",
+          response.notification.request.content.data
+        );
+        if (response.notification.request.content.data?.initialFilter) {
+          console.log(
+            "Found initialFilter in notification data:",
+            response.notification.request.content.data.initialFilter
+          );
+          // Set the filter state to the value from the notification data
+          setFilterBy(response.notification.request.content.data.initialFilter);
+        }
+      }
+    });
+  }, []); */
+  useEffect(() => {
+    if (initialFilter && typeof initialFilter === "string") {
+      setFilterBy(initialFilter);
+    }
+  }, [initialFilter]);
 
   const filteredItems = useMemo(() => {
     if (!Array.isArray(items)) return [];

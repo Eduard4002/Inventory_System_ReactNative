@@ -2,8 +2,7 @@ import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
 import Constants from "expo-constants";
 import supabase from "./supabase";
-
-//import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { router } from "expo-router";
 
 let expoPushToken: string | null = null;
 
@@ -36,6 +35,7 @@ async function sendPushNotification(
 export function addNotificationListener() {
   const notificationListener = Notifications.addNotificationReceivedListener(
     (notification) => {
+      console.log("addNotificationListener called");
       console.log("Notification received:", notification);
       console.log("Notification data:", notification.request.content.data);
     }
@@ -81,6 +81,21 @@ export async function requestNotificationPermission() {
   return expoPushToken;
 }
 async function uploadTokenToSupabase(token: string) {
+  // Check if the token already exists in the database
+  const { data: existingToken, error: fetchError } = await supabase
+    .from("Device_Token")
+    .select("token")
+    .eq("token", token)
+    .single();
+  if (fetchError) {
+    console.error("Failed to fetch existing token", fetchError);
+    return;
+  }
+  if (existingToken) {
+    console.log("Token already exists in the database:", existingToken);
+    return; // Token already exists, no need to insert again
+  }
+  // If the token does not exist, insert it into the database
   const { error } = await supabase.from("Device_Token").insert({ token });
   if (error) console.error("Failed to store token", error);
 }
@@ -94,14 +109,21 @@ Notifications.setNotificationHandler({
     shouldShowList: true,
   }),
 });
+
 export function addNotificationResponseListener() {
   const responseListener =
     Notifications.addNotificationResponseReceivedListener((response) => {
-      console.log("Notification response:", response);
-      console.log(
-        "Notification data:",
-        response.notification.request.content.data
-      );
+      const data = response.notification.request.content.data;
+      const filter = data?.initialFilter;
+
+      console.log("Tapped notification with filter:", filter);
+
+      if (filter) {
+        router.navigate({
+          pathname: "/",
+          params: { initialFilter: filter },
+        });
+      }
     });
   return responseListener;
 }

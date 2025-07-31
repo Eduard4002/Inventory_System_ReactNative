@@ -43,6 +43,15 @@ export default function RootLayout() {
         console.warn("Permission error:", err);
       }
     }
+    // Handle notification tap when app is launched from killed state
+    Notifications.getLastNotificationResponseAsync().then((response) => {
+      if (response) {
+        console.log("Initial notification response (cold start):", response);
+        navigation.navigate("index", {
+          initialFilter: "expiring_soon",
+        });
+      }
+    });
 
     requestAllPermissions();
 
@@ -58,11 +67,7 @@ export default function RootLayout() {
 
   return (
     <>
-      <StatusBar
-        barStyle={"light-content"}
-        translucent={true}
-        animated={true}
-      />
+      <StatusBar barStyle={"default"} translucent={false} animated={true} />
       <Stack>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="items/[id]" options={{ headerShown: false }} />
