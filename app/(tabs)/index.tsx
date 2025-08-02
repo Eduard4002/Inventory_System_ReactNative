@@ -172,17 +172,17 @@ export default function Index() {
   });
 
   const sortOptions = [
-    { label: "None", value: "none" },
-    { label: "Price: Expensive to Cheapest", value: "price_desc" },
-    { label: "Price: Cheapest to Expensive", value: "price_asc" },
-    { label: "Expiry Date: Nearest First", value: "expiry_asc" },
-    { label: "Expiry Date: Farthest First", value: "expiry_desc" },
+    { label: local.en.index.sortBy["None"], value: "none" },
+    { label: local.en.index.sortBy["Price-ExpToCheap"], value: "price_desc" },
+    { label: local.en.index.sortBy["Price-CheapToExp"], value: "price_asc" },
+    { label: local.en.index.sortBy["Expiry-NearFirst"], value: "expiry_asc" },
+    { label: local.en.index.sortBy["Expiry-FarFirst"], value: "expiry_desc" },
   ];
   const filterOptions = [
-    { label: "All Items", value: "all" },
-    { label: "Expired Items", value: "expired" },
-    { label: "Expiring Soon", value: "expiring_soon" },
-    { label: "Room Type", value: "room_type" },
+    { label: local.en.index.filter["All Items"], value: "all" },
+    { label: local.en.index.filter["Expired Items"], value: "expired" },
+    { label: local.en.index.filter["Expiring Soon"], value: "expiring_soon" },
+    { label: local.en.index.filter["Room Type"], value: "room_type" },
   ];
 
   const room_type = Constants.public.Enums.room_type.map((value) => ({

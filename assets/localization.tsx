@@ -6,6 +6,21 @@ let local = {
     index: {
       "Current Items": "Current Items",
       "Total Items": "Total Items",
+      "Search": "Search",
+      "Search-By": "Search by item name...",
+      filter: {
+        "All Items": "All Items",
+        "Expired Items": "Expired Items",
+        "Expiring Soon": "Expiring Soon",
+        "Room Type": "Room Type",
+      },
+      sortBy: {
+        "None": "None",
+        "Price-ExpToCheap": "Price: Expensive to Cheapest",
+        "Price-CheapToExp": "Price: Cheapest to Expensive",
+        "Expiry-NearFirst": "Expiry Date: Nearest First",
+        "Expiry-FarFirst": "Expiry Date: Farthest First",
+      },
     },
     info: {
       "Inventory Statistics": "Inventory Statistics",

@@ -9,7 +9,7 @@ import {
 import React from "react";
 import { icons } from "@/constants/icons"; // Assuming you have a search icon here
 import AntDesign from "@expo/vector-icons/AntDesign";
-
+import local from "@/assets/localization";
 interface SearchBarCustomProps {
   onSearchChange: (text: string) => void;
   value: string;
@@ -20,8 +20,8 @@ interface SearchBarCustomProps {
 const SearchBar: React.FC<SearchBarCustomProps> = ({
   onSearchChange,
   value,
-  title = "Search",
-  placeholder = "Search by item name...",
+  title = local.en.index["Search"],
+  placeholder = local.en.index["Search-By"],
 }) => {
   return (
     <View className="mt-6 p-2 border-2 border-accent-primary rounded-md bg-dark-100">
