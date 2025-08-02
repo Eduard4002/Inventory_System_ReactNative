@@ -25,7 +25,7 @@ import { useNavigation } from "@react-navigation/native"; // <-- ADD THIS IMPORT
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "@/types/navigation";
 import { PieChart } from "react-native-chart-kit";
-
+import local from "@/assets/localization";
 type InfoScreenNavigationProp = NativeStackNavigationProp<
   RootStackParamList,
   "Info"
@@ -153,59 +153,22 @@ const Info = () => {
     barPercentage: 0.5,
     useShadowColorFromDataset: false, // optional
   };
-  const cityData = [
-    {
-      name: "Seoul",
-      population: 21500000,
-      color: "rgba(131, 167, 234, 1)",
-      legendFontColor: "#7F7F7F",
-      legendFontSize: 15,
-    },
-    {
-      name: "Toronto",
-      population: 2800000,
-      color: "#F00",
-      legendFontColor: "#7F7F7F",
-      legendFontSize: 15,
-    },
-    {
-      name: "Beijing",
-      population: 527612,
-      color: "red",
-      legendFontColor: "#7F7F7F",
-      legendFontSize: 15,
-    },
-    {
-      name: "New York",
-      population: 8538000,
-      color: "#ffffff",
-      legendFontColor: "#7F7F7F",
-      legendFontSize: 15,
-    },
-    {
-      name: "Moscow",
-      population: 11920000,
-      color: "rgb(0, 0, 255)",
-      legendFontColor: "#7F7F7F",
-      legendFontSize: 15,
-    },
-  ];
 
   const InventoryInformation = [
     {
-      label: "Total Value",
+      label: local.en.info["Total Value"],
       value: `${stats.totalValue.toFixed(2)} kr`,
     },
     {
-      label: "Unique Items",
+      label: local.en.info["Unique Items"],
       value: `${stats.uniqueItems}`,
     },
     {
-      label: "Expiring Soon",
+      label: local.en.info["Expiring Soon"],
       value: `${stats.expiringSoon}`,
     },
     {
-      label: "Expired items",
+      label: local.en.info["Expired Items"],
       value: `${stats.expired}`,
     },
   ];
@@ -230,12 +193,12 @@ const Info = () => {
           <View className="w-full md:w-3/4 lg:w-1/2 xl:w-1/3 self-center">
             <View className="flex-row  p-2 mx-2  border-2 border-accent-primary rounded-md bg-dark-100 self-stretch items-center justify-center">
               <Text className="text-text-title text-4xl font-bold">
-                Inventory Statistics
+                {local.en.info["Inventory Statistics"]}
               </Text>
             </View>
             <View className="flex-col items-start justify-center mt-5 px-4 ">
               <Text className="text-text-title w-full text-center font-bold text-2xl mt-2 p-2 border-2 border-accent-primary rounded-md bg-dark-100">
-                Key Summary
+                {local.en.info["Key Summary"]}
               </Text>
               <FlatList
                 style={{ width: "100%" }}
@@ -251,7 +214,7 @@ const Info = () => {
               />
               {(stats.expired > 0 || stats.expiringSoon > 0) && ( // Only show this section if there are expired or expiring soon items
                 <Text className="text-text-title w-full text-center font-bold text-2xl mt-2 p-2 border-2 border-accent-primary rounded-md bg-dark-100">
-                  Expiration Warning
+                  {local.en.info["Expiration Warning"]}
                 </Text>
               )}
 
@@ -261,8 +224,10 @@ const Info = () => {
                   className="flex-row items-center justify-between mt-2 p-3 border-2 border-accent-primary rounded-md bg-dark-100 overflow-auto"
                 >
                   <Text className="text-text-title font-bold text-base w-3/5">
-                    You have ${stats.expiredValue?.toFixed(2)} worth of expired
-                    items!
+                    {local.en.info["Expired Notice"].replace(
+                      "{{value}}",
+                      stats.expiredValue?.toFixed(2).toString() ?? ""
+                    )}
                   </Text>
                   <TouchableOpacity
                     className="bg-accent-dark px-6 py-3 rounded-md"
@@ -273,7 +238,7 @@ const Info = () => {
                     }
                   >
                     <Text className="text-white font-bold text-xl text-center">
-                      VIEW
+                      {local.en.info["View"].toUpperCase()}
                     </Text>
                   </TouchableOpacity>
                 </View>
@@ -284,8 +249,10 @@ const Info = () => {
                   className="flex-row items-center justify-between mt-2 p-3 border-2 border-accent-primary rounded-md bg-dark-100 overflow-auto"
                 >
                   <Text className="text-text-title font-bold text-base w-3/5">
-                    You have ${stats.expiredSoonValue?.toFixed(2)} worth of
-                    expiring soon items!
+                    {local.en.info["Expiring Soon Notice"].replace(
+                      "{{value}}",
+                      stats.expiringSoon?.toFixed(2).toString() ?? ""
+                    )}
                   </Text>
                   <TouchableOpacity
                     className="bg-accent-dark px-6 py-3 rounded-md"
@@ -296,14 +263,14 @@ const Info = () => {
                     }
                   >
                     <Text className="text-white font-bold text-xl text-center">
-                      VIEW
+                      {local.en.info["View"].toUpperCase()}
                     </Text>
                   </TouchableOpacity>
                 </View>
               )}
-              <Text className="text-text-title w-full text-center font-bold text-2xl mt-2 p-2 border-2 border-accent-primary rounded-md bg-dark-100">
+              {/* <Text className="text-text-title w-full text-center font-bold text-2xl mt-2 p-2 border-2 border-accent-primary rounded-md bg-dark-100">
                 Category Breakdown
-              </Text>
+              </Text> */}
               {/* <PieChart
                 data={cityData}
                 width={Dimensions.get("window").width - 30}

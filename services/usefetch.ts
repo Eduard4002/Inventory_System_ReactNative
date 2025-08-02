@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-
+import local from "@/assets/localization";
 const useFetch = <T>(fetchFunction: () => Promise<T>, autoFetch = true) => {
   const [data, setData] = useState<T | null>(null);
   const [loading, setLoading] = useState(false);
@@ -14,7 +14,7 @@ const useFetch = <T>(fetchFunction: () => Promise<T>, autoFetch = true) => {
       setData(result);
     } catch (err) {
       setError(
-        err instanceof Error ? err : new Error("An unknown error occurred")
+        err instanceof Error ? err : new Error(local.en.api["Unknown Error"])
       );
     } finally {
       setLoading(false);

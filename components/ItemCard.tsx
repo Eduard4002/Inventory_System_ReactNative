@@ -35,16 +35,12 @@ const ItemCard = ({
               {name} ({measurement_amount} {measurement_type})
             </Text>
             <View className="flex-row items-center justify-start gap-x-1">
-              {/*<Image source={icons.star} className="size-4" />*/}
               <Text className="text-sm text-white font-bold uppercase">
                 {amount} st
               </Text>
             </View>
             <View className="flex-row items-center justify-between">
               <Text className="text-xs text-light-300 font-medium mt-1"></Text>
-              {/* <Text className="text-xs font-medium text-light-300 uppercase">
-            Movie
-          </Text> */}
             </View>
           </View>
         </View>

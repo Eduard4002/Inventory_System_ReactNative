@@ -104,10 +104,10 @@ async function getExpiringItems() {
     .from("Item")
     .select("*")
     .lte("expiry_date", nextWeek.toISOString());
-  finalcount: number = 0;
-  data.array.forEach((element) => {
-    finalcount += element.amount;
-  });
+  /* var finalcount: number = 0;
+  data?.forEach((element) => {
+    finalcount += element?.amount;
+  }); */
 
   if (error) throw error;
   return data;
@@ -140,7 +140,7 @@ export const deleteItem = async (ID: number) => {
   if (imageUrl) {
     const { error: storageError } = await supabase.storage
       .from("item-image")
-      .remove([`public/${imageUrl.split("/").pop()}`]);
+      .remove([`public/${imageUrl}`]);
 
     if (storageError) {
       console.error("Error deleting item image:", storageError.message);

@@ -23,7 +23,7 @@ import { Tables } from "@/database.types";
 import { images } from "@/constants/images";
 import { background } from "@/constants/background";
 import { BlurView } from "expo-blur";
-
+import local from "@/assets/localization";
 const _renderItem = ({ item }: { item: { label: string; value: string } }) => (
   <View
     style={{ width: "47%" }}
@@ -98,25 +98,29 @@ const ItemDetails = () => {
   };
   const ItemInformation = [
     {
-      label: "Amount",
+      label: local.en.item["Amount"],
       value: `${item?.amount} st`,
     },
     {
-      label: "Expires in",
+      label: local.en.item["Expires in"],
       value: `${item?.expiry_date}`,
     },
     {
-      label: "Added in",
+      label: local.en.item["Added in"],
       value: `${item?.created_at}`,
     },
     {
-      label: "Found in",
+      label: local.en.item["Found in"],
       value: `${item?.room_type}`,
     },
-    {
-      label: "Price per item",
-      value: item?.price ? `${item.price} kr` : "Price not provided",
-    },
+    ...(item?.price != null
+      ? [
+          {
+            label: local.en.item["Price Per Item"],
+            value: `${item.price} kr`,
+          },
+        ]
+      : []),
   ];
   return (
     <ImageBackground
@@ -183,7 +187,7 @@ const ItemDetails = () => {
 
               <View className="flex-col items-center justify-center mt-5 w-full">
                 <Text className="text-text-title w-full text-center font-bold text-2xl mt-2 p-2 border-2 border-accent-primary rounded-md bg-dark-100">
-                  UPDATE AMOUNT
+                  {local.en.item["Update Amount"].toUpperCase()}
                 </Text>
 
                 <View className="flex-row items-center justify-between mt-5 p-4  border-2 border-accent-primary rounded-md bg-dark-100 w-3/4 self-center">
@@ -211,7 +215,7 @@ const ItemDetails = () => {
                       onPress={handleSave}
                     >
                       <Text className="text-white font-bold text-xl text-center">
-                        SAVE
+                        {local.en.item["Save"].toUpperCase()}
                       </Text>
                     </TouchableOpacity>
                   </View>

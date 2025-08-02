@@ -20,6 +20,8 @@ import { background } from "@/constants/background";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { useFocusEffect } from "@react-navigation/native";
 import InfoModal from "@/components/Modal/InfoModal";
+import supabase from "@/services/supabase";
+import local from "@/assets/localization";
 
 // Conditional imports for non-web platforms
 let CameraInputCustom: any = null;
@@ -81,8 +83,7 @@ const AddItem = () => {
       setInfoModal({
         visible: true,
         title: "Missing Information",
-        message:
-          "Please make sure Name, Amount, and Measurement Amount are all filled in.",
+        message: local.en.additem["Missing Information"],
       });
       //TODO: "Not sure if I want to keep the alert on or not, but I will keep it for now"
       return;
@@ -95,15 +96,27 @@ const AddItem = () => {
       setInfoModal({
         visible: true,
         title: "Success!",
-        message: "The new item has been saved successfully.",
+        message: local.en.additem["Success-Save-Item"],
       });
     } catch (error: any) {
       console.error("Error inserting item: ", error);
       setInfoModal({
         visible: true,
         title: "Save Error",
-        message: `Failed to save the item. Please try again. \n\nError: ${error.message}`,
+
+        message:
+          local.en.additem["Failed-Save-Item"] + `\n\nError: ${error.message}`,
       });
+      // If we failed to save the item, but the image was saved successfully, we should delete the image
+      if (item.image_url != null) {
+        const filename = item.image_url.split("/").pop();
+        if (filename) {
+          /* const { error: deleteError } = await supabase.storage.from("images").delete(filename);
+          if (deleteError) {
+            console.error("Error deleting image after failed item save:", deleteError);
+          } */
+        }
+      }
     }
   };
   const handlePictureTaken = async (photo: PhotoFile) => {
@@ -142,7 +155,9 @@ const AddItem = () => {
           >
             <View className="w-full md:w-3/4 lg:w-1/2 xl:w-1/3 self-center items-center">
               <View className="flex-row  p-2 mx-2  border-2 border-accent-primary rounded-md bg-dark-100 self-stretch items-center justify-center">
-                <Text className="text-white text-4xl font-bold">Add Item</Text>
+                <Text className="text-white text-4xl font-bold">
+                  {local.en.additem["Add Item"]}
+                </Text>
               </View>
 
               <>
@@ -170,7 +185,7 @@ const AddItem = () => {
                 <TextInputCustom
                   onChangeText={(text) => setItem({ ...item, name: text })}
                   placeholder="Brasno"
-                  title="Name"
+                  title={local.en.additem["Name"]}
                   value={item.name}
                 />
                 <TextInputCustom
@@ -178,7 +193,7 @@ const AddItem = () => {
                     setItem({ ...item, price: parseFloat(text) })
                   }
                   placeholder="19"
-                  title="Price"
+                  title={local.en.additem["Price"]}
                   inputMode="decimal"
                   value={item.price ? item.price.toString() : ""}
                 />
@@ -187,7 +202,7 @@ const AddItem = () => {
                     setItem({ ...item, measurement_amount: parseFloat(text) })
                   }
                   placeholder="5"
-                  title="Measurement Amount"
+                  title={local.en.additem["Measurement Amount"]}
                   inputMode="decimal"
                   value={
                     item.measurement_amount
@@ -201,8 +216,11 @@ const AddItem = () => {
                     value: val,
                   }))}
                   selectedValue={item.measurement_type}
-                  placeholder="Select Measurement Type"
-                  title="Measurement Type"
+                  placeholder={
+                    local.en.additem["Select "] +
+                    local.en.additem["Measurement Type"]
+                  }
+                  title={local.en.additem["Measurement Type"]}
                   onValueChange={(value) => {
                     setItem({
                       ...item,
@@ -216,8 +234,10 @@ const AddItem = () => {
                     value: val,
                   }))}
                   selectedValue={item.room_type}
-                  placeholder="Select Room Type"
-                  title="Room Name"
+                  placeholder={
+                    local.en.additem["Select "] + local.en.additem["Room Type"]
+                  }
+                  title={local.en.additem["Room Name"]}
                   onValueChange={(value) => {
                     setItem({
                       ...item,
@@ -238,7 +258,7 @@ const AddItem = () => {
                       expiry_date: dateString,
                     });
                   }}
-                  title="Expiry Date"
+                  title={local.en.additem["Expiry Date"]}
                   value={item.expiry_date ? item.expiry_date : new Date()}
                 />
                 <TextInputCustom
@@ -246,7 +266,7 @@ const AddItem = () => {
                     setItem({ ...item, amount: parseFloat(text) })
                   }
                   placeholder="5"
-                  title="Amount of Items"
+                  title={local.en.additem["Amount of Items"]}
                   inputMode="decimal"
                   value={item.amount ? item.amount.toString() : ""}
                 />
@@ -255,7 +275,9 @@ const AddItem = () => {
                     className="bg-dark-200 border-2 border-accent-primary flex-1 justify-center rounded-md items-center"
                     onPress={handleSave}
                   >
-                    <Text className="text-white font-bold text-3xl ">SAVE</Text>
+                    <Text className="text-white font-bold text-3xl ">
+                      {local.en.additem["Save"].toUpperCase()}
+                    </Text>
                   </TouchableOpacity>
                 </View>
               </>

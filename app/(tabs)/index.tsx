@@ -42,6 +42,7 @@ import { RootStackParamList } from "@/types/navigation";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import AntDesign from "@expo/vector-icons/AntDesign";
 
+import local from "@/assets/localization";
 type IndexScreenRouteProp = RouteProp<RootStackParamList, "index">;
 type InfoScreenNavigationProp = NativeStackNavigationProp<
   RootStackParamList,
@@ -317,7 +318,7 @@ export default function Index() {
           <View className="w-full md:w-3/4 lg:w-1/2 xl:w-1/3 self-center">
             <View className="flex-row  p-2 mx-2  border-2 border-accent-primary rounded-md bg-dark-100 self-stretch items-center justify-center">
               <Text className="text-text-title text-4xl font-bold">
-                Current Items
+                {local.en.index["Current Items"]}
               </Text>
             </View>
             {itemsLoading ? (
@@ -362,7 +363,7 @@ export default function Index() {
             </View>
             <View className="p-2 mt-2 w-full border-2 border-accent-primary rounded-md bg-dark-100">
               <Text className="text-text-title text-2xl font-bold">
-                Total Items: {filteredItems.length}
+                {local.en.index["Total Items"]}: {filteredItems.length}
               </Text>
             </View>
             <FlatList
