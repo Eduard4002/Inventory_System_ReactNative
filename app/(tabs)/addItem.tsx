@@ -147,13 +147,13 @@ const AddItem = () => {
         }}
         blurRadius={2}
       >
-        <View className="flex-1 pt-8">
+        <View className="flex-1">
           <ScrollView
             className="flex-1 px-5 "
             showsVerticalScrollIndicator={false}
             contentContainerStyle={{ paddingBottom: 100 }}
           >
-            <View className="w-full md:w-3/4 lg:w-1/2 xl:w-1/3 self-center items-center">
+            <View className="w-full md:w-3/4 lg:w-1/2 xl:w-1/3 self-center items-center  pt-8">
               <View className="flex-row  p-2 mx-2  border-2 border-accent-primary rounded-md bg-dark-100 self-stretch items-center justify-center">
                 <Text className="text-white text-4xl font-bold">
                   {local.en.additem["Add Item"]}
