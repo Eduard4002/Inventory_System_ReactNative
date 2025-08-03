@@ -21,11 +21,12 @@ import { Tables } from "@/database.types";
 import supabase from "@/services/supabase";
 import useFetch from "@/services/usefetch";
 import { fetchItems } from "@/services/api";
-import { useNavigation } from "@react-navigation/native"; // <-- ADD THIS IMPORT
+import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "@/types/navigation";
 import { PieChart } from "react-native-chart-kit";
 import local from "@/assets/localization";
+
 type InfoScreenNavigationProp = NativeStackNavigationProp<
   RootStackParamList,
   "Info"
@@ -184,13 +185,13 @@ const Info = () => {
       }}
       blurRadius={2}
     >
-      <View className="flex-1">
+      <View className="flex-1 pt-8">
         <ScrollView
           className="flex-1 px-5"
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{ minHeight: "100%", paddingBottom: 10 }}
         >
-          <View className="w-full md:w-3/4 lg:w-1/2 xl:w-1/3 self-center pt-8">
+          <View className="w-full md:w-3/4 lg:w-1/2 xl:w-1/3 self-center">
             <View className="flex-row  p-2 mx-2  border-2 border-accent-primary rounded-md bg-dark-100 self-stretch items-center justify-center">
               <Text className="text-text-title text-4xl font-bold">
                 {local.en.info["Inventory Statistics"]}

@@ -89,7 +89,11 @@ async function uploadTokenToSupabase(token: string) {
     .single();
   if (fetchError) {
     console.error("Failed to fetch existing token", fetchError);
-    return;
+    if (fetchError.code === "PGRST116") {
+      console.log("No existing token found, proceeding to insert.");
+    } else {
+      return;
+    }
   }
   if (existingToken) {
     console.log("Token already exists in the database:", existingToken);
