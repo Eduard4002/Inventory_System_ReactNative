@@ -157,19 +157,19 @@ const Info = () => {
 
   const InventoryInformation = [
     {
-      label: local.en.info["Total Value"],
+      label: local.info["Total Value"],
       value: `${stats.totalValue.toFixed(2)} kr`,
     },
     {
-      label: local.en.info["Unique Items"],
+      label: local.info["Unique Items"],
       value: `${stats.uniqueItems}`,
     },
     {
-      label: local.en.info["Expiring Soon"],
+      label: local.info["Expiring Soon"],
       value: `${stats.expiringSoon}`,
     },
     {
-      label: local.en.info["Expired Items"],
+      label: local.info["Expired Items"],
       value: `${stats.expired}`,
     },
   ];
@@ -194,12 +194,12 @@ const Info = () => {
           <View className="w-full md:w-3/4 lg:w-1/2 xl:w-1/3 self-center">
             <View className="flex-row  p-2 mx-2  border-2 border-accent-primary rounded-md bg-dark-100 self-stretch items-center justify-center">
               <Text className="text-text-title text-4xl font-bold">
-                {local.en.info["Inventory Statistics"]}
+                {local.info["Inventory Statistics"]}
               </Text>
             </View>
             <View className="flex-col items-start justify-center mt-5 px-4 ">
               <Text className="text-text-title w-full text-center font-bold text-2xl mt-2 p-2 border-2 border-accent-primary rounded-md bg-dark-100">
-                {local.en.info["Key Summary"]}
+                {local.info["Key Summary"]}
               </Text>
               <FlatList
                 style={{ width: "100%" }}
@@ -215,7 +215,7 @@ const Info = () => {
               />
               {(stats.expired > 0 || stats.expiringSoon > 0) && ( // Only show this section if there are expired or expiring soon items
                 <Text className="text-text-title w-full text-center font-bold text-2xl mt-2 p-2 border-2 border-accent-primary rounded-md bg-dark-100">
-                  {local.en.info["Expiration Warning"]}
+                  {local.info["Expiration Warning"]}
                 </Text>
               )}
 
@@ -225,7 +225,7 @@ const Info = () => {
                   className="flex-row items-center justify-between mt-2 p-3 border-2 border-accent-primary rounded-md bg-dark-100 overflow-auto"
                 >
                   <Text className="text-text-title font-bold text-base w-3/5">
-                    {local.en.info["Expired Notice"].replace(
+                    {local.info["Expired Notice"].replace(
                       "{{value}}",
                       stats.expiredValue?.toFixed(2).toString() ?? ""
                     )}
@@ -239,7 +239,7 @@ const Info = () => {
                     }
                   >
                     <Text className="text-white font-bold text-xl text-center">
-                      {local.en.info["View"].toUpperCase()}
+                      {local.info["View"].toUpperCase()}
                     </Text>
                   </TouchableOpacity>
                 </View>
@@ -250,7 +250,7 @@ const Info = () => {
                   className="flex-row items-center justify-between mt-2 p-3 border-2 border-accent-primary rounded-md bg-dark-100 overflow-auto"
                 >
                   <Text className="text-text-title font-bold text-base w-3/5">
-                    {local.en.info["Expiring Soon Notice"].replace(
+                    {local.info["Expiring Soon Notice"].replace(
                       "{{value}}",
                       stats.expiringSoon?.toFixed(2).toString() ?? ""
                     )}
@@ -264,7 +264,7 @@ const Info = () => {
                     }
                   >
                     <Text className="text-white font-bold text-xl text-center">
-                      {local.en.info["View"].toUpperCase()}
+                      {local.info["View"].toUpperCase()}
                     </Text>
                   </TouchableOpacity>
                 </View>

@@ -98,25 +98,25 @@ const ItemDetails = () => {
   };
   const ItemInformation = [
     {
-      label: local.en.item["Amount"],
+      label: local.item["Amount"],
       value: `${item?.amount} st`,
     },
     {
-      label: local.en.item["Expires in"],
+      label: local.item["Expires in"],
       value: `${item?.expiry_date}`,
     },
     {
-      label: local.en.item["Added in"],
+      label: local.item["Added in"],
       value: `${item?.created_at}`,
     },
     {
-      label: local.en.item["Found in"],
+      label: local.item["Found in"],
       value: `${item?.room_type}`,
     },
     ...(item?.price != null
       ? [
           {
-            label: local.en.item["Price Per Item"],
+            label: local.item["Price Per Item"],
             value: `${item.price} kr`,
           },
         ]
@@ -187,7 +187,7 @@ const ItemDetails = () => {
 
               <View className="flex-col items-center justify-center mt-5 w-full">
                 <Text className="text-text-title w-full text-center font-bold text-2xl mt-2 p-2 border-2 border-accent-primary rounded-md bg-dark-100">
-                  {local.en.item["Update Amount"].toUpperCase()}
+                  {local.item["Update Amount"].toUpperCase()}
                 </Text>
 
                 <View className="flex-row items-center justify-between mt-5 p-4  border-2 border-accent-primary rounded-md bg-dark-100 w-3/4 self-center">
@@ -215,7 +215,7 @@ const ItemDetails = () => {
                       onPress={handleSave}
                     >
                       <Text className="text-white font-bold text-xl text-center">
-                        {local.en.item["Save"].toUpperCase()}
+                        {local.item["Save"].toUpperCase()}
                       </Text>
                     </TouchableOpacity>
                   </View>

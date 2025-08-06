@@ -3,6 +3,7 @@ import React from "react";
 import DropdownInputCustom from "../Inputs/DropdownInputCustom";
 import { Constants } from "@/database.types";
 import ModalWrapper from "./ModalWrapper"; // Import the wrapper
+import local from "@/assets/localization";
 
 interface FilterModalProps {
   visible: boolean;
@@ -29,7 +30,11 @@ const FilterModal: React.FC<FilterModalProps> = ({
   }));
 
   return (
-    <ModalWrapper visible={visible} onClose={onClose} title="Filter Items">
+    <ModalWrapper
+      visible={visible}
+      onClose={onClose}
+      title={local.index.filter["Filter Items"]}
+    >
       <View>
         {filterOptions.map((option) => (
           <TouchableOpacity

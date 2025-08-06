@@ -1,5 +1,5 @@
-let local = {
-  en: {
+let languageTable = {
+  "en": {
     api: {
       "Unknown Error": "An unknown error occurred",
     },
@@ -9,12 +9,14 @@ let local = {
       "Search": "Search",
       "Search-By": "Search by item name...",
       filter: {
+        "Filter Items": "Filter Items",
         "All Items": "All Items",
         "Expired Items": "Expired Items",
         "Expiring Soon": "Expiring Soon",
         "Room Type": "Room Type",
       },
       sortBy: {
+        "Sort Items": "Sort Items",
         "None": "None",
         "Price-ExpToCheap": "Price: Expensive to Cheapest",
         "Price-CheapToExp": "Price: Cheapest to Expensive",
@@ -62,7 +64,7 @@ let local = {
       "Save": "Save",
     },
   },
-  hr: {
+  "hr": {
     api: {
       "Unknown Error": "Došlo je do nepoznate pogreške",
     },
@@ -72,12 +74,16 @@ let local = {
       "Search": "Pretraživanje",
       "Search-By": "Pretraži po nazivu stavke...",
       filter: {
+        "Filter Items": "Filtrirajte stavke",
+
         "All Items": "Sve stavke",
         "Expired Items": "Istekle stavke",
         "Expiring Soon": "Uskoro ističe",
         "Room Type": "Tip sobe",
       },
       sortBy: {
+        "Sort Items": "Poredaj stavke",
+
         "None": "Nijedan",
         "Price-ExpToCheap": "Cijena: Od skupih do najjeftinijih",
         "Price-CheapToExp": "Cijena: Od najjeftinije do najskuplje",
@@ -127,4 +133,8 @@ let local = {
     },
   },
 };
+
+var language = "hr";
+
+let local = languageTable[language];
 export default local;

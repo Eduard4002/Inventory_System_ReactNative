@@ -20,8 +20,8 @@ interface SearchBarCustomProps {
 const SearchBar: React.FC<SearchBarCustomProps> = ({
   onSearchChange,
   value,
-  title = local.en.index["Search"],
-  placeholder = local.en.index["Search-By"],
+  title = local.index["Search"],
+  placeholder = local.index["Search-By"],
 }) => {
   return (
     <View className="mt-6 p-2 border-2 border-accent-primary rounded-md bg-dark-100">

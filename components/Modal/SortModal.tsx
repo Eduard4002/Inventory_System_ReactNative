@@ -1,6 +1,8 @@
 import { View, Text, TouchableOpacity } from "react-native";
 import React from "react";
 import ModalWrapper from "./ModalWrapper";
+import local from "@/assets/localization";
+
 interface SortModalProps {
   visible: boolean;
   onClose: () => void;
@@ -18,7 +20,11 @@ const SortModal: React.FC<SortModalProps> = ({
 }) => {
   // Now, this component returns the ModalWrapper with its content inside
   return (
-    <ModalWrapper visible={visible} onClose={onClose} title="Sort Items">
+    <ModalWrapper
+      visible={visible}
+      onClose={onClose}
+      title={local.index.sortBy["Sort Items"]}
+    >
       <View className="flex-1">
         {sortOptions.map((option) => (
           <TouchableOpacity

@@ -83,7 +83,7 @@ const AddItem = () => {
       setInfoModal({
         visible: true,
         title: "Missing Information",
-        message: local.en.additem["Missing Information"],
+        message: local.additem["Missing Information"],
       });
       //TODO: "Not sure if I want to keep the alert on or not, but I will keep it for now"
       return;
@@ -96,7 +96,7 @@ const AddItem = () => {
       setInfoModal({
         visible: true,
         title: "Success!",
-        message: local.en.additem["Success-Save-Item"],
+        message: local.additem["Success-Save-Item"],
       });
     } catch (error: any) {
       console.error("Error inserting item: ", error);
@@ -105,7 +105,7 @@ const AddItem = () => {
         title: "Save Error",
 
         message:
-          local.en.additem["Failed-Save-Item"] + `\n\nError: ${error.message}`,
+          local.additem["Failed-Save-Item"] + `\n\nError: ${error.message}`,
       });
       // If we failed to save the item, but the image was saved successfully, we should delete the image
       if (item.image_url != null) {
@@ -156,7 +156,7 @@ const AddItem = () => {
             <View className="w-full md:w-3/4 lg:w-1/2 xl:w-1/3 self-center items-center  pt-8">
               <View className="flex-row  p-2 mx-2  border-2 border-accent-primary rounded-md bg-dark-100 self-stretch items-center justify-center">
                 <Text className="text-white text-4xl font-bold">
-                  {local.en.additem["Add Item"]}
+                  {local.additem["Add Item"]}
                 </Text>
               </View>
 
@@ -185,7 +185,7 @@ const AddItem = () => {
                 <TextInputCustom
                   onChangeText={(text) => setItem({ ...item, name: text })}
                   placeholder="Brasno"
-                  title={local.en.additem["Name"]}
+                  title={local.additem["Name"]}
                   value={item.name}
                 />
                 <TextInputCustom
@@ -193,7 +193,7 @@ const AddItem = () => {
                     setItem({ ...item, price: parseFloat(text) })
                   }
                   placeholder="19"
-                  title={local.en.additem["Price"]}
+                  title={local.additem["Price"]}
                   inputMode="decimal"
                   value={item.price ? item.price.toString() : ""}
                 />
@@ -202,7 +202,7 @@ const AddItem = () => {
                     setItem({ ...item, measurement_amount: parseFloat(text) })
                   }
                   placeholder="5"
-                  title={local.en.additem["Measurement Amount"]}
+                  title={local.additem["Measurement Amount"]}
                   inputMode="decimal"
                   value={
                     item.measurement_amount
@@ -217,10 +217,9 @@ const AddItem = () => {
                   }))}
                   selectedValue={item.measurement_type}
                   placeholder={
-                    local.en.additem["Select "] +
-                    local.en.additem["Measurement Type"]
+                    local.additem["Select "] + local.additem["Measurement Type"]
                   }
-                  title={local.en.additem["Measurement Type"]}
+                  title={local.additem["Measurement Type"]}
                   onValueChange={(value) => {
                     setItem({
                       ...item,
@@ -235,9 +234,9 @@ const AddItem = () => {
                   }))}
                   selectedValue={item.room_type}
                   placeholder={
-                    local.en.additem["Select "] + local.en.additem["Room Type"]
+                    local.additem["Select "] + local.additem["Room Type"]
                   }
-                  title={local.en.additem["Room Name"]}
+                  title={local.additem["Room Name"]}
                   onValueChange={(value) => {
                     setItem({
                       ...item,
@@ -258,7 +257,7 @@ const AddItem = () => {
                       expiry_date: dateString,
                     });
                   }}
-                  title={local.en.additem["Expiry Date"]}
+                  title={local.additem["Expiry Date"]}
                   value={item.expiry_date ? item.expiry_date : new Date()}
                 />
                 <TextInputCustom
@@ -266,7 +265,7 @@ const AddItem = () => {
                     setItem({ ...item, amount: parseFloat(text) })
                   }
                   placeholder="5"
-                  title={local.en.additem["Amount of Items"]}
+                  title={local.additem["Amount of Items"]}
                   inputMode="decimal"
                   value={item.amount ? item.amount.toString() : ""}
                 />
@@ -276,7 +275,7 @@ const AddItem = () => {
                     onPress={handleSave}
                   >
                     <Text className="text-white font-bold text-3xl ">
-                      {local.en.additem["Save"].toUpperCase()}
+                      {local.additem["Save"].toUpperCase()}
                     </Text>
                   </TouchableOpacity>
                 </View>

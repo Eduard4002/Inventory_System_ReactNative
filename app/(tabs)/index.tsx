@@ -172,17 +172,17 @@ export default function Index() {
   });
 
   const sortOptions = [
-    { label: local.en.index.sortBy["None"], value: "none" },
-    { label: local.en.index.sortBy["Price-ExpToCheap"], value: "price_desc" },
-    { label: local.en.index.sortBy["Price-CheapToExp"], value: "price_asc" },
-    { label: local.en.index.sortBy["Expiry-NearFirst"], value: "expiry_asc" },
-    { label: local.en.index.sortBy["Expiry-FarFirst"], value: "expiry_desc" },
+    { label: local.index.sortBy["None"], value: "none" },
+    { label: local.index.sortBy["Price-ExpToCheap"], value: "price_desc" },
+    { label: local.index.sortBy["Price-CheapToExp"], value: "price_asc" },
+    { label: local.index.sortBy["Expiry-NearFirst"], value: "expiry_asc" },
+    { label: local.index.sortBy["Expiry-FarFirst"], value: "expiry_desc" },
   ];
   const filterOptions = [
-    { label: local.en.index.filter["All Items"], value: "all" },
-    { label: local.en.index.filter["Expired Items"], value: "expired" },
-    { label: local.en.index.filter["Expiring Soon"], value: "expiring_soon" },
-    { label: local.en.index.filter["Room Type"], value: "room_type" },
+    { label: local.index.filter["All Items"], value: "all" },
+    { label: local.index.filter["Expired Items"], value: "expired" },
+    { label: local.index.filter["Expiring Soon"], value: "expiring_soon" },
+    { label: local.index.filter["Room Type"], value: "room_type" },
   ];
 
   const room_type = Constants.public.Enums.room_type.map((value) => ({
@@ -318,7 +318,7 @@ export default function Index() {
           <View className="w-full md:w-3/4 lg:w-1/2 xl:w-1/3 self-center pt-8">
             <View className="flex-row  p-2 mx-2  border-2 border-accent-primary rounded-md bg-dark-100 self-stretch items-center justify-center">
               <Text className="text-text-title text-4xl font-bold">
-                {local.en.index["Current Items"]}
+                {local.index["Current Items"]}
               </Text>
             </View>
             {itemsLoading ? (
@@ -363,7 +363,7 @@ export default function Index() {
             </View>
             <View className="p-2 mt-2 w-full border-2 border-accent-primary rounded-md bg-dark-100">
               <Text className="text-text-title text-2xl font-bold">
-                {local.en.index["Total Items"]}: {filteredItems.length}
+                {local.index["Total Items"]}: {filteredItems.length}
               </Text>
             </View>
             <FlatList
